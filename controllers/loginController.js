@@ -1,5 +1,6 @@
+const bcrypt = require('bcryptjs');
+const jsonwebtoken = require('jsonwebtoken');
 const EmpleadoModel = require('../models/EmpleadoModel');
-
 module.exports.login = (req, res) => {
     res.render('login');
 };
@@ -14,14 +15,26 @@ module.exports.authenticate = (req, res) => {
         }
 
         if (results.length > 0) {
-            const userData = {
-                usuario: results[0].Usuario,
-                nombre: results[0].Nombre,
-                rango: results[0].Rango // Reemplaza con el nombre correcto del campo en tu base de datos
-            };
+
 
             if (results[0].Alta) {
-                res.render('principal'); // Cambia "/inicio" a la ruta deseada.
+                //console.log(results);
+                const token = jsonwebtoken.sign(
+                    {
+                        id: results[0].IDEmp,
+                        user: results[0].Usuario,
+                        rango: results[0].Cargo
+                    },
+                    process.env.JWT_SECRET,
+                    { expiresIn: process.env.JWT_EXPIRATION });
+
+                const cookieOption = {
+                    expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
+                    path: "/"
+                }
+                //console.log(token);
+                res.cookie("jwt", token, cookieOption);
+                res.render('principal');
             } else {
                 res.render('login', { error: 'El usuario existe pero está dado de baja' });
             }

@@ -1,0 +1,8 @@
+HOST = hostbd
+USER = userbd
+PASSWORD = passwordbd
+DATABASE = dbbd
+
+JWT_SECRET = clavejwt
+JWT_EXPIRATION = tiempoexp
+JWT_COOKIE_EXPIRES = tiempoexpcookie

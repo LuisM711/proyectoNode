@@ -1,15 +1,20 @@
 const express = require('express');
 const routes = require('./routes');
+const cookieParser = require('cookie-parser');
 const mysql = require('mysql');
 const path = require('path');
+const dotenv = require('dotenv');
 const app = express();
 const bodyParser = require('body-parser');
+app.use(cookieParser());
+
+dotenv.config();
 app.use(bodyParser.urlencoded({ extended: true }));
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'password8.',
-  database: 'nomina'
+  host: process.env.HOST,
+  user: process.env.USER,
+  password: process.env.PASSWORD,
+  database: process.env.DATABASE
 });
 db.connect((err) => {
   if (err) {

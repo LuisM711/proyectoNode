@@ -1,5 +1,5 @@
 const EmpleadoModel = require('../models/EmpleadoModel');
-
+const verification = require("../middlewares/verification");
 module.exports.usuarios = (req, res) => {
     EmpleadoModel.getEmpleados(req.db, (err, empleadosData, cargosData) => {
         if (err) {
@@ -14,7 +14,15 @@ module.exports.usuarios = (req, res) => {
     });
 };
 
+
 module.exports.guardarCambios = (req, res) => {
+    const userData = verification.getUserData(req, res); // Obtén los datos del usuario sin enviarlos al cliente
+
+    // if (userData) {
+    //     console.log('Datos del usuario:', userData); // Muestra los datos en el console.log del servidor
+
+    //     // Puedes tomar decisiones basadas en userData aquí
+    // }
     const idEmpleado = req.body.idEmpleado;
     const username = req.body.username;
     const role = req.body.role;
@@ -24,7 +32,8 @@ module.exports.guardarCambios = (req, res) => {
         if (err) {
             res.redirect("/usuarios");
         } else {
-            res.redirect("/usuarios");
+            if(userData.id == idEmpleado)res.render('login', { error: 'El usuario ha sido modifiado' });
+            else res.redirect("/usuarios");
         }
     });
 };
