@@ -1,8 +1,13 @@
 const bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
 const EmpleadoModel = require('../models/EmpleadoModel');
+const verification = require("../middlewares/verification");
 module.exports.login = (req, res) => {
-    res.render('login');
+    if (verification.getUserData(req, res)) {
+        res.render('principal');
+    } else {
+        res.render('login');
+    }
 };
 
 module.exports.logout = (req, res) => {
