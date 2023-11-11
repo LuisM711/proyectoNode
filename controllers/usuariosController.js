@@ -17,7 +17,7 @@ module.exports.usuarios = (req, res) => {
 
 module.exports.guardarCambios = (req, res) => {
     const userData = verification.getUserData(req, res); // Obtén los datos del usuario sin enviarlos al cliente
-
+    console.log(req.body);
     // if (userData) {
     //     console.log('Datos del usuario:', userData); // Muestra los datos en el console.log del servidor
 
@@ -28,11 +28,13 @@ module.exports.guardarCambios = (req, res) => {
     const role = req.body.role;
     const isActive = req.body.isActive === "on" || false;
 
-    EmpleadoModel.actualizarEmpleado(req.db, idEmpleado, username, role, isActive, (err) => {
+    EmpleadoModel.actualizarEmpleado(req.db, req.body, (err) => {
         if (err) {
             res.redirect("/usuarios");
         } else {
-            if(userData.id == idEmpleado)res.render('login', { error: 'El usuario ha sido modifiado' });
+            if (userData.id == idEmpleado) {
+                res.redirect("/logout");
+            }
             else res.redirect("/usuarios");
         }
     });

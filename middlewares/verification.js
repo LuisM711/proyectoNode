@@ -11,7 +11,9 @@ function revisarCookie(req, res, next) {
         //return true;
     } catch (error) {
         //console.log("Errorrrrrrr");
-        return res.status(403).send({ status: "Error", message: "La cookie no pudo ser validada" })
+        //return res.status(403).send({ status: "Error", message: "La cookie no pudo ser validada" });
+        return res.render('login', { error: 'Cookie inválida' });
+
         //return false;
     }
 }

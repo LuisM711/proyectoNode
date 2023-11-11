@@ -15,7 +15,12 @@ class EmpleadoModel {
                         e.Usuario,
                         e.Cargo,
                         c.Cargos AS Rango,
-                        e.Alta
+                        e.Alta,
+                        e.Direccion,
+                        e.Celular,
+                        e.RFC,
+                        e.NSS,
+                        e.CURP
                     FROM nomina.empleados AS e
                     INNER JOIN nomina.cargos AS c ON e.Cargo = c.IDCargos;
                 `;
@@ -42,9 +47,10 @@ class EmpleadoModel {
             }
         });
     }
-    static actualizarEmpleado(db, idEmpleado, username, role, isActive, callback) {
-        const sql = "UPDATE empleados SET Usuario = ?, Cargo = ?, Alta = ? WHERE IDEmp = ?";
-        const values = [username, role, isActive, idEmpleado];
+    static actualizarEmpleado(db, datos, callback) {
+        const sql = "UPDATE empleados SET Usuario = ?, Cargo = ?, Alta = ?, Direccion = ?, Celular = ?, RFC = ?, NSS = ?, CURP = ? WHERE IDEmp = ?";
+        const values = [datos.username, datos.role, datos.isActive === "on" || false, datos.direccion, datos.celular, datos.RFC, datos.NSS, datos.CURP, datos.idEmpleado];
+
         db.query(sql, values, (err, results) => {
             if (err) {
                 console.error('Error al guardar cambios en la base de datos: ' + err.message);

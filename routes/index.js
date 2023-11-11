@@ -13,6 +13,7 @@ module.exports = () => {
   router.get('/nomina', verification.revisarCookie, nominaController.nomina);
 
   router.post('/auth', loginController.authenticate);
+  router.get('/logout', loginController.logout);
   router.post('/guardarCambios', verification.revisarCookie, usuariosController.guardarCambios);
   //router.get('/getUsuario', verification.getUserData);
 

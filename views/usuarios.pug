@@ -2,45 +2,81 @@ extends layout
 block content
     .container.mt-5
       .row
-        .col-md-6
+        .col-md-10.mx-auto
+          .table-responsive
+            table.table.table-striped
+              thead
+                tr
+                  th ID del Empleado
+                  th Nombre de Usuario
+                  th Rango
+                  th Usuario Dado de Alta
+                  th Dirección del usuario
+                  th Celular del usuario
+                  th RFC del usuario
+                  th NSS del usuario
+                  th CURP del usuario
+              tbody
+                each empleado in empleadosData
+                  tr
+                    td= empleado.IDEmp
+                    td= empleado.Usuario
+                    td= empleado.Rango
+                    td= empleado.Alta ? 'Si' : 'No'
+                    td= empleado.Direccion
+                    td= empleado.Celular
+                    td= empleado.RFC
+                    td= empleado.NSS
+                    td= empleado.CURP
+                    // Agrega más columnas para otros campos si es necesario
+        .col-md-10.mx-auto
           .card
             .card-header Control de Usuarios
             .card-body
               form(id="userForm", action="/guardarCambios", method="POST")
-                .mb-3
-                  label(for="idEmpleado", class="form-label") ID del Empleado
-                  input(type="text", class="form-control", id="idEmpleado", name = "idEmpleado", placeholder="ID del empleado", readonly = true, required)
-                .mb-3
-                  label(for="username", class="form-label") Nombre de Usuario
-                  input(type="text", class="form-control", id="username", name = "username", placeholder="Nombre de usuario", required)
-                .mb-3
-                  label(for="role", class="form-label") Rango
-                  select.form-select#role(name="role", required)
-                    each cargo in cargosData
-                      option(value=cargo.IDCargos)= cargo.Cargos
-                .mb-3.form-check
-                  input(type="checkbox", class="form-check-input", id="active", name = "isActive")
-                  label.form-check-label(for="active") Usuario Dado de Alta
-                button(type="submit", class="btn btn-primary btn-block") Guardar Cambios
-        .col-md-6
-          table.table.table-striped
-            thead
-              tr
-                th ID del Empleado
-                th Nombre de Usuario
-                th Rango
-                th Usuario Dado de Alta
-            tbody
-              each empleado in empleadosData
-                tr
-                  td= empleado.IDEmp
-                  td= empleado.Usuario
-                  td= empleado.Rango
-                  td= empleado.Alta ? 'Si' : 'No'
-                  // Agrega más columnas para otros campos si es necesario
+                .mb-3.row
+                  .col-md-4
+                    label(for="idEmpleado", class="form-label") ID del Empleado
+                    input(type="text", class="form-control", id="idEmpleado", name="idEmpleado", placeholder="ID del empleado", readonly=true, required)
+                  .col-md-4
+                    label(for="username", class="form-label") Nombre de Usuario
+                    input(type="text", class="form-control", id="username", name="username", placeholder="Nombre de usuario", required)
+                  .col-md-4
+                    label(for="direccion", class="form-label") Dirección
+                    input(type="text", class="form-control", id="direccion", name="direccion", placeholder="Direccion del usuario", required)
+
+                .mb-3.row
+                  .col-md-4
+                    label(for="celular", class="form-label") Celular del Usuario
+                    input(type="text", class="form-control", id="celular", name="celular", placeholder="Celular de usuario", required)
+                  .col-md-4
+                    label(for="RFC", class="form-label") RFC del Usuario
+                    input(type="text", class="form-control", id="RFC", name="RFC", placeholder="RFC del usuario", required)
+                  .col-md-4
+                    label(for="NSS", class="form-label") NSS del Usuario
+                    input(type="text", class="form-control", id="NSS", name="NSS", placeholder="NSS del usuario", required)
+
+                .mb-3.row
+                  .col-md-4
+                    label(for="CURP", class="form-label") CURP del Usuario
+                    input(type="text", class="form-control", id="CURP", name="CURP", placeholder="CURP del usuario", required)
+                  .col-md-4
+                    label(for="role", class="form-label") Rango
+                    select.form-select#role(name="role", required)
+                      each cargo in cargosData
+                        option(value=cargo.IDCargos)= cargo.Cargos
+                  .col-md-4
+                    .form-check
+                      input(type="checkbox", class="form-check-input", id="active", name="isActive")
+                      label.form-check-label(for="active") Usuario Dado de Alta
+
+                .mb-3.row
+                  .col-md-12
+                    button(type="submit", class="btn btn-primary btn-block") Guardar Cambios
+
 
     // Agrega el enlace a los archivos JS de Bootstrap 5.0 (Bootstrap 5.0 ya no necesita jQuery)
-    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js", integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4", crossorigin="anonymous")
+    //script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js", integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4", crossorigin="anonymous")
     script.
       // Función para actualizar el formulario al hacer clic en una fila de la tabla
       const tableRows = document.querySelectorAll("tbody tr");
@@ -59,6 +95,12 @@ block content
           const cargoEncontrado = empleadosMap[IDEmp];
           document.getElementById("role").value = cargoEncontrado || "err"; // Establece el valor en el campo "Rango"
           document.getElementById("active").checked = cells[3].textContent === "Si";
+          document.getElementById("direccion").value = cells[4].textContent;
+          document.getElementById("celular").value = cells[5].textContent;
+          document.getElementById("RFC").value = cells[6].textContent;
+          document.getElementById("NSS").value = cells[7].textContent;
+          document.getElementById("CURP").value = cells[8].textContent;
+
         });
       });
 

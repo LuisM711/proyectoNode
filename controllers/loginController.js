@@ -5,6 +5,11 @@ module.exports.login = (req, res) => {
     res.render('login');
 };
 
+module.exports.logout = (req, res) => {
+    const cookieName = 'jwt';
+    res.clearCookie(cookieName);
+    res.render('login', { error: 'Sesión cerrada' });
+}
 module.exports.authenticate = (req, res) => {
     const { Usuario, Contra } = req.body;
 
@@ -27,6 +32,7 @@ module.exports.authenticate = (req, res) => {
                     },
                     process.env.JWT_SECRET,
                     { expiresIn: process.env.JWT_EXPIRATION });
+
 
                 const cookieOption = {
                     expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
