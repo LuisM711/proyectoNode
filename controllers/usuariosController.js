@@ -16,12 +16,13 @@ module.exports.usuarios = (req, res) => {
 
 
 module.exports.guardarCambios = (req, res) => {
+    const userData = verification.getUserData(req, res);
     EmpleadoModel.actualizarEmpleado(req.db, req.body, (err) => {
         if (err) {
             res.redirect("/usuarios");
         } else {
-            if (req.body.id == req.body.idEmpleado) {
-                res.redirect("/logout");
+            if (userData.id == req.body.idEmpleado) {
+                res.render('login', {error: "El usuario ha sido actualizado, por favor inicia sesión de nuevo"});
             }
             else res.redirect("/usuarios");
         }

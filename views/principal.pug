@@ -11,18 +11,21 @@ block content
           p ¿Estás seguro de que deseas cerrar la sesión?
         .modal-footer
           button.btn.btn-secondary(data-bs-dismiss="modal" type="button") Cancelar
-          a.btn.btn-primary(href="#" onclick="confirmarCerrarSesion()") Confirmar cierre de sesión
+          a.btn.btn-primary(href="/logout") Confirmar cierre de sesión
   .container.mt-5
     .row.justify-content-center
       .col-md-6.text-center
         h1 Sistema de Nómina
         p Bienvenido al sistema de nómina. Seleccione una opción a continuación:
         .mb-3
-          a(href="/usuarios" class="btn btn-primary") Control de Usuarios
+          if rango === 1
+            a(href="/usuarios" class="btn btn-primary") Control de Usuarios
+          else
+            a(href="#" onclick = "sinPermisos()" class="btn btn-secondary" disabled) Control de Usuarios
         .mb-3
           a(href="/nomina" class="btn btn-success") Consultar nómina
         .mb-3
-          a(href="/" class="btn btn-warning") Modificar salarios
+          a(href="/" class="btn btn-warning") Modificar salarios y retenciones
         .mb-3
           a(href="/" class="btn btn-info") Ver resumen de gastos
         .mb-3
@@ -37,10 +40,7 @@ block content
           a(href="#" onclick="abrirModalCerrarSesion()" class="btn btn-danger") Cerrar sesión
 
   script.
+    //const rango = !{JSON.stringify(rango)};
     const confirmLogoutModal = new bootstrap.Modal(document.getElementById('confirmLogoutModal'))
     const abrirModalCerrarSesion = () => confirmLogoutModal.show()
-
-    const confirmarCerrarSesion = () => {
-      // Aquí puedes agregar lógica adicional antes de redirigir a "logout"
-      window.location.href = "/logout"
-    }
+    const sinPermisos = () => alert("No tienes permisos para acceder a esta sección");

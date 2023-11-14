@@ -45,7 +45,8 @@ module.exports.authenticate = (req, res) => {
                 }
                 //console.log(token);
                 res.cookie("jwt", token, cookieOption);
-                res.render('principal');
+                console.log(results[0].Cargo);
+                res.render('principal', { rango: results[0].Cargo });
             } else {
                 res.render('login', { error: 'El usuario existe pero está dado de baja' });
             }
