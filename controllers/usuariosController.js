@@ -1,11 +1,13 @@
 const EmpleadoModel = require('../models/EmpleadoModel');
 const verification = require("../middlewares/verification");
 module.exports.usuarios = (req, res) => {
-    EmpleadoModel.getEmpleados(req.db, (err, empleadosData, cargosData) => {
+    EmpleadoModel.getEmpleadosLight(req.db, (err, empleadosData, cargosData) => {
         if (err) {
             res.status(500).send('Error en la consulta de empleados');
             return;
         }
+        //console.log(empleadosData);
+        //console.log(cargosData);
         res.render('usuarios', {
             userData: req.app.locals.userData,
             empleadosData,
@@ -28,3 +30,17 @@ module.exports.guardarCambios = (req, res) => {
         }
     });
 };
+module.exports.getEmpleadoById = (req, res) => {
+    const userData = verification.getUserData(req, res);
+    //console.log(req.params);
+    const idEmpleado = req.params.idEmpleado;
+  
+    EmpleadoModel.getEmpleadoById(req.db, idEmpleado, (err, empleado) => {
+      if (err) {
+        res.status(500).json({ error: 'Error en la consulta de empleado' });
+      } else {
+        res.json(empleado);
+      }
+    });
+  };
+  

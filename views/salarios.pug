@@ -1,0 +1,44 @@
+extends layout
+
+block content
+  .container.mt-5
+    .row
+      .col-md-10.mx-auto
+        .table-responsive
+          table.table.table-striped
+            thead
+              tr
+                th ID del Empleado
+                th Usuario
+                th Sueldo mensual
+                th Descuentos
+                th Acciones
+            tbody
+              each empleado in empleadosData
+                tr
+                  td= empleado.IDEmp
+                  td= empleado.Usuario
+                  td= empleado.SueldoMensual
+                  td= "0 pesos aun"
+                  td
+                    button.btn.btn-primary(type="button", data-bs-toggle="modal", data-bs-target=`#detalleEmpleadoModal-${empleado.IDEmp}`) Detalles
+
+        each empleado in empleadosData
+          // Modal Detalles del Empleado
+          .modal.fade(id=`detalleEmpleadoModal-${empleado.IDEmp}`, tabindex="-1")
+            .modal-dialog.modal-dialog-centered.modal-lg
+              .modal-content
+                .modal-header
+                  h5.modal-title Detalles del Empleado
+                  button.btn-close(type="button", data-bs-dismiss="modal", aria-label="Close")
+                .modal-body
+                  p ID del Empleado: #{empleado.IDEmp}
+                  p Percepciones: #{empleado.Percepciones}
+                  p Retenciones: #{empleado.Retenciones}
+                  // Agrega aquí más detalles según sea necesario
+                .modal-footer
+                  // Agrega botones u acciones adicionales si es necesario
+
+  script.
+    const empleadosData = !{JSON.stringify(empleadosData)}; // Convierte cargosData a objeto JavaScript
+    //console.log(empleadosData);
