@@ -48,6 +48,7 @@ class EmpleadoModel {
         });
     }
     static actualizarEmpleado(db, datos, callback) {
+        console.log(datos);
         const sql = "UPDATE empleados SET Usuario = ?, Cargo = ?, Alta = ?, Direccion = ?, Celular = ?, RFC = ?, NSS = ?, CURP = ? WHERE IDEmp = ?";
         const values = [datos.username, datos.role, datos.isActive === "on" || false, datos.direccion, datos.celular, datos.RFC, datos.NSS, datos.CURP, datos.idEmpleado];
 
