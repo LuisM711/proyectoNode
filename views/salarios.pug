@@ -19,26 +19,119 @@ block content
                   td= empleado.IDEmp
                   td= empleado.Usuario
                   td= empleado.SueldoMensual
-                  td= "0 pesos aun"
+                  td= empleado.DeudaTotal
                   td
-                    button.btn.btn-primary(type="button", data-bs-toggle="modal", data-bs-target=`#detalleEmpleadoModal-${empleado.IDEmp}`) Detalles
-
-        each empleado in empleadosData
-          // Modal Detalles del Empleado
-          .modal.fade(id=`detalleEmpleadoModal-${empleado.IDEmp}`, tabindex="-1")
-            .modal-dialog.modal-dialog-centered.modal-lg
-              .modal-content
-                .modal-header
-                  h5.modal-title Detalles del Empleado
-                  button.btn-close(type="button", data-bs-dismiss="modal", aria-label="Close")
-                .modal-body
-                  p ID del Empleado: #{empleado.IDEmp}
-                  p Percepciones: #{empleado.Percepciones}
-                  p Retenciones: #{empleado.Retenciones}
-                  // Agrega aquí más detalles según sea necesario
-                .modal-footer
-                  // Agrega botones u acciones adicionales si es necesario
+                    button.btn.btn-primary(type="button", onclick=`abrirModalDetalles(${empleado.IDEmp})`) Detalles
 
   script.
     const empleadosData = !{JSON.stringify(empleadosData)}; // Convierte cargosData a objeto JavaScript
-    //console.log(empleadosData);
+
+    const abrirModalDetalles = (ID) => {
+      // Generar el modal dinámicamente
+      const modalContent = `
+        <div class="modal fade" id="detalleEmpleadoModal-${ID}" tabindex="-1">
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Detalles del Empleado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form id="detalleEmpleadoForm-${ID}">
+                  <p>ID del Empleado: ${ID}</p>
+                  <label for="sueldoMensual">Sueldo Mensual:</label>
+                  <input type="number" id="sueldoMensual" name="sueldoMensual" value="${empleadosData.find(e => e.IDEmp === ID).SueldoMensual}" required>
+                  <div id="detallesContent-${ID}"></div>
+                  <button type="button" onclick="agregarFila(${ID})">Agregar</button>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="guardarDetalles(${ID})">Guardar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Insertar el modal en el cuerpo del documento
+      document.body.insertAdjacentHTML('beforeend', modalContent);
+
+      // Hacer la petición GET al backend para obtener los detalles y actualizar el contenido del modal
+      fetch(`/detallesDeducciones/${ID}`)
+        .then(response => response.json())
+        .then(detalles => {
+          //console.log(detalles);
+
+          // Construir el formulario dinámicamente con los datos recibidos
+          const detallesContent = document.getElementById(`detallesContent-${ID}`);
+          detallesContent.innerHTML = "";
+          detalles.forEach((detalle, index) => {
+            detallesContent.innerHTML += `
+              <div>
+                <label for="monto-${index}">Monto:</label>
+                <input type="number" id="monto-${index}" name="monto-${index}" value="${detalle.MONTO}" required>
+                <label for="descripcion-${index}">Descripción:</label>
+                <input type="text" id="descripcion-${index}" name="descripcion-${index}" value="${detalle.DESCRIPCION}" required>
+                <button type="button" onclick="eliminarFila(${ID}, ${index})">Eliminar</button>
+              </div>
+            `;
+          });
+        })
+        .catch(error => console.error(error));
+
+      // Mostrar el modal
+      const detalleEmpleadoModal = new bootstrap.Modal(document.getElementById(`detalleEmpleadoModal-${ID}`));
+      detalleEmpleadoModal.show();
+    };
+
+    const agregarFila = (ID) => {
+      // Añadir una fila adicional al formulario
+      const detallesContent = document.getElementById(`detallesContent-${ID}`);
+      const index = detallesContent.children.length; // Obtener el índice para el nuevo detalle
+      detallesContent.innerHTML += `
+        <div>
+          <label for="monto-${index}">Monto:</label>
+          <input type="number" id="monto-${index}" name="monto-${index}" required>
+          <label for="descripcion-${index}">Descripción:</label>
+          <input type="text" id="descripcion-${index}" name="descripcion-${index}" required>
+          <button type="button" onclick="eliminarFila(${ID}, ${index})">Eliminar</button>
+        </div>
+      `;
+    };
+
+    const eliminarFila = (ID, index) => {
+      // Eliminar la fila del formulario
+      const detallesContent = document.getElementById(`detallesContent-${ID}`);
+      detallesContent.children[index].remove();
+    };
+
+    const guardarDetalles = (ID) => {
+      // Obtener los datos ingresados por el usuario del formulario
+      const sueldoMensual = document.getElementById('sueldoMensual').value;
+
+      // Obtener los detalles de percepciones y retenciones del formulario
+      const detalles = [];
+      const detallesContent = document.getElementById(`detallesContent-${ID}`);
+      const detalleInputs = detallesContent.querySelectorAll('div');
+      detalleInputs.forEach((detalleInput, index) => {
+        const monto = document.getElementById(`monto-${index}`).value;
+        const descripcion = document.getElementById(`descripcion-${index}`).value;
+        detalles.push({ MONTO: monto, DESCRIPCION: descripcion });
+      });
+      const cuerpo = JSON.stringify({ sueldoMensual, detalles });
+      // Realizar la petición al backend para guardar los detalles
+      fetch(`/guardarDetallesEmpleado/${ID}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: cuerpo,
+      })
+        .then(response => response.json())
+        .then(resultado => {
+          // Realizar acciones adicionales después de guardar, si es necesario
+          console.log(resultado);
+        })
+        .catch(error => console.error(error));
+    };

@@ -2,6 +2,21 @@
 
 */
 class EmpleadoModel {
+    static actualizarSueldoDeducciones(db,idEmp,sueldo,detalles, callback) {
+        console.log("DATOOOOOOOOOOS");
+        console.log(idEmp,sueldo,detalles);
+        const sql = `
+                    update empleados set SueldoMensual = ${sueldo} where IDEmp = ${idEmp};
+                `;
+                db.query(sql, (err, results) => {
+                    if (err) {
+                        console.error('Error en la consulta: ' + err.message);
+                        callback(err, null, null);
+                    } else {
+                        callback(null, results);
+                    }
+                });
+    }
     static getEmpleadosLight(db, callback) {
         const sqlCargos = 'SELECT IDCargos, Cargos FROM cargos';
         db.query(sqlCargos, (err, resultadosCargos) => {
@@ -73,7 +88,8 @@ class EmpleadoModel {
         SELECT
             e.IDEmp,
             e.Usuario,
-            e.SueldoMensual
+            e.SueldoMensual,
+            getDeudaTotal(e.IDemp) as DeudaTotal
         FROM nomina.empleados AS e
                 `;
         db.query(sql, (err, results) => {
@@ -82,8 +98,23 @@ class EmpleadoModel {
                 console.error('Error en la consulta: ' + err.message);
                 callback(err, null, null);
             } else {
-
                 callback(null, results);
+            }
+        });
+
+    }
+    static getSalariosDetalle(db,idEmpleado, callback) {
+
+        const sql = `
+            CALL getDeudaTotalDetalle(${idEmpleado})
+                `;
+        db.query(sql, (err, results) => {
+            //console.log(results);
+            if (err) {
+                console.error('Error en la consulta: ' + err.message);
+                callback(err, null, null);
+            } else {
+                callback(null, results[0]);
             }
         });
 

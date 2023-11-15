@@ -13,12 +13,12 @@ module.exports = () => {
   router.get('/usuarios', verification.revisarCookie, usuariosController.usuarios);
   router.get('/nomina', verification.revisarCookie, nominaController.nomina);
   router.get('/salarios', verification.revisarCookie, salariosController.salarios);
-
+  router.get('/detallesDeducciones/:idEmpleado',verification.revisarCookie,salariosController.salariosDetalle);
   router.post('/auth', loginController.authenticate);
   router.get('/logout', loginController.logout);
   router.post('/guardarCambios', verification.revisarCookie, usuariosController.guardarCambios);
   router.get('/empleados/:idEmpleado', verification.revisarCookie, usuariosController.getEmpleadoById);
-
+  router.put('/guardarDetallesEmpleado/:idEmpleado',verification.revisarCookie, salariosController.actualizarDatos);
 
   return router;
 };

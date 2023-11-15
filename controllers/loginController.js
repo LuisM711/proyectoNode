@@ -3,8 +3,9 @@ const jsonwebtoken = require('jsonwebtoken');
 const EmpleadoModel = require('../models/EmpleadoModel');
 const verification = require("../middlewares/verification");
 module.exports.login = (req, res) => {
-    if (verification.getUserData(req, res)) {
-        res.render('principal');
+    const datos = verification.getUserData(req, res);
+    if (datos) {
+        res.render('principal', datos);
     } else {
         res.render('login');
     }
@@ -45,7 +46,7 @@ module.exports.authenticate = (req, res) => {
                 }
                 //console.log(token);
                 res.cookie("jwt", token, cookieOption);
-                console.log(results[0].Cargo);
+                //this.login(req, res);
                 res.render('principal', { rango: results[0].Cargo });
             } else {
                 res.render('login', { error: 'El usuario existe pero está dado de baja' });
