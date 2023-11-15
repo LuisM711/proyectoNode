@@ -4,8 +4,11 @@ const EmpleadoModel = require('../models/EmpleadoModel');
 const verification = require("../middlewares/verification");
 module.exports.login = (req, res) => {
     const datos = verification.getUserData(req, res);
+    //console.log(datos);
     if (datos) {
-        res.render('principal', datos);
+        res.render('principal', {
+            datos:{...datos}
+        });
     } else {
         res.render('login');
     }
@@ -32,9 +35,11 @@ module.exports.authenticate = (req, res) => {
                 //console.log(results);
                 const token = jsonwebtoken.sign(
                     {
+
                         id: results[0].IDEmp,
                         user: results[0].Usuario,
-                        rango: results[0].Cargo
+                        rango: results[0].Cargo,
+                        Nombre: results[0].Nombre
                     },
                     process.env.JWT_SECRET,
                     { expiresIn: process.env.JWT_EXPIRATION });
@@ -46,8 +51,7 @@ module.exports.authenticate = (req, res) => {
                 }
                 //console.log(token);
                 res.cookie("jwt", token, cookieOption);
-                //this.login(req, res);
-                res.render('principal', { rango: results[0].Cargo });
+                res.redirect('/');
             } else {
                 res.render('login', { error: 'El usuario existe pero está dado de baja' });
             }

@@ -6,21 +6,27 @@ html(lang="es")
     link(rel="stylesheet", href="/css/bootstrap.css")
     script(src="/js/bootstrap.js") 
     title Equipo 7
-  body 
-  .container.mt-5
-    .row.justify-content-center
-      .col-md-6
-        .card
-          .card-header Iniciar sesión
-          .card-body
-            if error
-              .alert.alert-danger
-                p= error
-            form(action="/auth", method="POST")
-              .mb-3
-                label(for="Usuario", class="form-label") Usuario
-                input(type="text", class="form-control", id="Usuario", name="Usuario", placeholder="Ingrese su usuario", required)
-              .mb-3
-                label(for="Contra", class="form-label") Contraseña
-                input(type="password", class="form-control", id="Contra", name="Contra", placeholder="Ingrese su contraseña", required)
-                button(type="submit", class="btn btn-primary btn-block") Iniciar sesión
+  body
+    p#top(style="background-color: var(--bs-blue); font-weight: bold; padding: 5px;text-align: center") UNIVERSIDAD AUTONOMA DE SINALOA
+      svg(xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gem" viewBox="0 0 16 16")
+
+    .container.mt-5
+      .row.justify-content-center
+        .col-md-6
+          .card
+            .card-header
+              h5.text-center Sistema de control de nómina
+            .card-body
+              if error
+                .alert.alert-danger
+                  p= error
+              form(action="/auth", method="POST")
+                .mb-3
+                  label(for="Usuario", class="form-label") Usuario
+                  input(type="text", class="form-control", id="Usuario", name="Usuario", placeholder="Ingrese su usuario", required)
+                .mb-3
+                  label(for="Contra", class="form-label") Contraseña
+                  input(type="password", class="form-control", id="Contra", name="Contra", placeholder="Ingrese su contraseña", required)
+                  button(type="submit", class="btn btn-primary btn-block") Iniciar sesión
+        .col-12.text-center.fixed-bottom.bg-dark.text-light.p-3
+          p Copyright 2023 Todos los derechos reservados al equipo 7

@@ -4,9 +4,11 @@ block content
   .container.mt-5
     .row.justify-content-center
       .col-md-6.text-center
-        h1 Sistema de Nómina
+        h1 Bienvenido, #{datos.Nombre}
         p Equipo 7
-
+      if datos.error
+        .alert.alert-danger
+          p= datos.error
       div#carouselExampleInterval.carousel.slide(data-bs-ride="carousel")
         .carousel-inner
           each img, index in ['/img/foto1.jpg', '/img/foto2.jpg', '/img/foto3.jpg','/img/foto4.jpg']
@@ -20,3 +22,6 @@ block content
         button.carousel-control-next(type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next")
           span.carousel-control-next-icon(aria-hidden="true")
           span.visually-hidden Next
+    script.
+      const datos = !{JSON.stringify(datos)};
+      console.log(datos);

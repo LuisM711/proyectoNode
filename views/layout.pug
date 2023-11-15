@@ -20,16 +20,13 @@ html(lang="es")
             a.btn.btn-primary(href="/logout") Confirmar cierre de sesión 
     nav.navbar.navbar-expand-lg.navbar-dark.bg-primary
       .container-fluid
-        a.navbar-brand(href="#") Equipo 7
+        a.navbar-brand(href="/") Equipo 7
         button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav", aria-controls="navbarNav", aria-expanded="false", aria-label="Toggle navigation")
           span.navbar-toggler-icon
         .collapse.navbar-collapse#navbarNav
           ul.navbar-nav
             li.nav-item
-              if rango === 1
-                a.nav-link(href="/usuarios") Control de Usuarios
-              else
-                a.nav-link(onclick="sinPermisos()", href="#" disabled) Control de Usuarios
+              a.nav-link(href="/usuarios") Control de Usuarios
             li.nav-item
               a.nav-link(href="/nomina") Consultar nómina
             li.nav-item
