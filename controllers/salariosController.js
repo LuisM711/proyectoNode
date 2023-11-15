@@ -32,16 +32,13 @@ module.exports.actualizarDatos = (req, res) => {
     const idEmpleado = req.params.idEmpleado;
     //console.log(req.body);
     // res.json(req.body);
+        EmpleadoModel.actualizarSueldoDeducciones(req.db, idEmpleado,req.body.sueldoMensual,req.body.detalles, (err, empleadosDataDetalle) => {
+            if (err) {
+                res.status(500).json({ message: 'Error en la actualización'});
+            }
+            else{
+                res.status(200).json({ message: 'Actualización exitosa' });
+            }
+        });
 
-    EmpleadoModel.actualizarSueldoDeducciones(req.db, idEmpleado,req.body.sueldoMensual,req.body.detalles, (err, empleadosDataDetalle) => {
-        if (err) {
-            res.status(500).send('Error en la consulta de empleados');
-            return;
-        }
-        
-    });
-
-
-
-    res.redirect("/salarios");
 }

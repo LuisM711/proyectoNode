@@ -104,22 +104,46 @@ block content
       // Eliminar la fila del formulario
       const detallesContent = document.getElementById(`detallesContent-${ID}`);
       detallesContent.children[index].remove();
+
+      // Actualizar los índices de las filas restantes
+      const detalleInputs = detallesContent.querySelectorAll('div');
+      detalleInputs.forEach((detalleInput, i) => {
+        detalleInput.querySelector('input[type="number"]').name = `monto-${i}`;
+        detalleInput.querySelector('input[type="text"]').name = `descripcion-${i}`;
+        detalleInput.querySelector('button').setAttribute('onclick', `eliminarFila(${ID}, ${i})`);
+      });
     };
 
     const guardarDetalles = (ID) => {
-      // Obtener los datos ingresados por el usuario del formulario
+      let flag = false;
       const sueldoMensual = document.getElementById('sueldoMensual').value;
-
-      // Obtener los detalles de percepciones y retenciones del formulario
+      const sueldoRegex = /^\d+(\.\d{1,2})?$/;
+      if (!sueldoRegex.test(sueldoMensual)) {
+        alert("Ingrese un sueldo mensual válido");
+        flag = true;
+        return;
+      }
       const detalles = [];
       const detallesContent = document.getElementById(`detallesContent-${ID}`);
       const detalleInputs = detallesContent.querySelectorAll('div');
-      detalleInputs.forEach((detalleInput, index) => {
-        const monto = document.getElementById(`monto-${index}`).value;
-        const descripcion = document.getElementById(`descripcion-${index}`).value;
+      detalleInputs.forEach((detalleInput) => {
+        const monto = detalleInput.querySelector('input[type="text"]').value;
+        const descripcion = detalleInput.querySelector('input[type="text"]').value;
+
+        // Validar el monto con una expresión regular para dinero
+        const montoRegex = /^\d+(\.\d{1,2})?$/;
+        if (!montoRegex.test(monto)) {
+          flag = true;
+          alert("Ingrese un monto válido");
+          return;
+        }
+
         detalles.push({ MONTO: monto, DESCRIPCION: descripcion });
       });
+      if (flag) return;
       const cuerpo = JSON.stringify({ sueldoMensual, detalles });
+      console.log(cuerpo);
+
       // Realizar la petición al backend para guardar los detalles
       fetch(`/guardarDetallesEmpleado/${ID}`, {
         method: 'PUT',
@@ -130,8 +154,20 @@ block content
       })
         .then(response => response.json())
         .then(resultado => {
-          // Realizar acciones adicionales después de guardar, si es necesario
           console.log(resultado);
+          location.reload();
         })
         .catch(error => console.error(error));
     };
+
+
+
+
+
+
+
+
+
+
+
+

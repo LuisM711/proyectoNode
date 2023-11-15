@@ -2,21 +2,61 @@
 
 */
 class EmpleadoModel {
-    static actualizarSueldoDeducciones(db,idEmp,sueldo,detalles, callback) {
-        console.log("DATOOOOOOOOOOS");
-        console.log(idEmp,sueldo,detalles);
-        const sql = `
-                    update empleados set SueldoMensual = ${sueldo} where IDEmp = ${idEmp};
-                `;
-                db.query(sql, (err, results) => {
+    static actualizarSueldoDeducciones(db, idEmp, sueldo, detalles, callback) {
+        let sql = `UPDATE empleados SET SueldoMensual = ? WHERE IDEmp = ?;`;
+    
+        db.query(sql, [sueldo, idEmp], (err, results) => {
+            if (err) {
+                console.error('Error en la consulta: ' + err.message);
+                callback(err, null);
+                return;
+            } else {
+                // Llamada a la eliminación de descuentos
+                sql = "DELETE FROM descuentos WHERE IDEmp = ?;";
+                db.query(sql, [Number(idEmp)], (err, results) => {
                     if (err) {
                         console.error('Error en la consulta: ' + err.message);
-                        callback(err, null, null);
+                        callback(err, null);
                     } else {
-                        callback(null, results);
+                        // Lógica de inserción de nuevos descuentos
+                        if (detalles.length > 0) {
+                            const insertPromises = detalles.map(element => {
+                                sql = "INSERT INTO descuentos (IDEmp, Monto, Descripcion) VALUES (?, ?, ?);";
+                                return db.query(sql, [idEmp, element.MONTO, element.DESCRIPCION]);
+                            });
+    
+                            Promise.all(insertPromises)
+                                .then(() => {
+                                    // Todas las inserciones de descuentos fueron exitosas
+                                    callback(null, results);
+                                })
+                                .catch(insertErr => {
+                                    console.error('Error en la consulta de inserción de descuentos: ' + insertErr.message);
+                                    callback(insertErr, null);
+                                });
+                        } else {
+                            // No hay detalles para insertar
+                            callback(null, results);
+                        }
                     }
                 });
+            }
+        });
     }
+    
+    
+    // static authenticate(req, Usuario, Contra, callback) {
+    //     const sql = 'SELECT * FROM empleados WHERE Usuario = ? AND Contra = ?';
+
+    //     req.db.query(sql, [Usuario, Contra], (err, results) => {
+    //         if (err) {
+    //             console.error('Error en la consulta: ' + err.message);
+    //             callback(err, null);
+    //         } else {
+    //             callback(null, results);
+    //         }
+    //     });
+    // }
     static getEmpleadosLight(db, callback) {
         const sqlCargos = 'SELECT IDCargos, Cargos FROM cargos';
         db.query(sqlCargos, (err, resultadosCargos) => {
@@ -103,7 +143,7 @@ class EmpleadoModel {
         });
 
     }
-    static getSalariosDetalle(db,idEmpleado, callback) {
+    static getSalariosDetalle(db, idEmpleado, callback) {
 
         const sql = `
             CALL getDeudaTotalDetalle(${idEmpleado})
