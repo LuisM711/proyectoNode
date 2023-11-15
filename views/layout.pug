@@ -1,11 +1,57 @@
 doctype html
-html(lang="en")
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        link(rel="stylesheet", href="/css/bootstrap.css")
-        script(src="/js/bootstrap.js") 
-        title Equipo 7
-    body 
-        header
-        block content
+html(lang="es")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="/css/bootstrap.css")
+    script(src="/js/bootstrap.js")
+    title Equipo 7
+  body
+    .modal.fade#confirmLogoutModal(tabindex="-1")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h5.modal-title Confirmar Cierre de Sesión
+            button.btn-close(data-bs-dismiss="modal" aria-label="Close" type="button")
+          .modal-body
+            p ¿Estás seguro de que deseas cerrar la sesión?
+          .modal-footer
+            button.btn.btn-secondary(data-bs-dismiss="modal" type="button") Cancelar
+            a.btn.btn-primary(href="/logout") Confirmar cierre de sesión 
+    nav.navbar.navbar-expand-lg.navbar-dark.bg-primary
+      .container-fluid
+        a.navbar-brand(href="#") Equipo 7
+        button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav", aria-controls="navbarNav", aria-expanded="false", aria-label="Toggle navigation")
+          span.navbar-toggler-icon
+        .collapse.navbar-collapse#navbarNav
+          ul.navbar-nav
+            li.nav-item
+              if rango === 1
+                a.nav-link(href="/usuarios") Control de Usuarios
+              else
+                a.nav-link(onclick="sinPermisos()", href="#" disabled) Control de Usuarios
+            li.nav-item
+              a.nav-link(href="/nomina") Consultar nómina
+            li.nav-item
+              a.nav-link(href="/salarios") Modificar salarios y retenciones
+            li.nav-item
+              a.nav-link(href="#") Ver resumen de gastos
+            li.nav-item
+              a.nav-link(href="#") Ver historial de nómina
+            li.nav-item
+              a.nav-link(href="#") Modificar impuestos y deducciones 
+            li.nav-item
+              a.nav-link(href="#") Acceso a documentos importantes
+            li.nav-item
+              a.nav-link(href="#" onclick="abrirModalCerrarSesion()") Cerrar sesión
+    script.
+      function abrirModalCerrarSesion() {
+        let confirmLogoutModal = new bootstrap.Modal(document.getElementById('confirmLogoutModal'));
+        confirmLogoutModal.show();
+      }
+
+      function sinPermisos() {
+        alert("No tienes permisos para acceder a esta sección");
+      }
+
+  block content

@@ -1,46 +1,22 @@
 extends layout
 
 block content
-  .modal.fade#confirmLogoutModal(tabindex="-1")
-    .modal-dialog
-      .modal-content
-        .modal-header
-          h5.modal-title Confirmar Cierre de Sesión
-          button.btn-close(data-bs-dismiss="modal" aria-label="Close" type="button")
-        .modal-body
-          p ¿Estás seguro de que deseas cerrar la sesión?
-        .modal-footer
-          button.btn.btn-secondary(data-bs-dismiss="modal" type="button") Cancelar
-          a.btn.btn-primary(href="/logout") Confirmar cierre de sesión
   .container.mt-5
     .row.justify-content-center
       .col-md-6.text-center
         h1 Sistema de Nómina
-        p Bienvenido al sistema de nómina. Seleccione una opción a continuación:
-        .mb-3
-          if rango === 1
-            a(href="/usuarios" class="btn btn-primary") Control de Usuarios
-          else
-            a(href="#" onclick = "sinPermisos()" class="btn btn-secondary" disabled) Control de Usuarios
-        .mb-3
-          a(href="/nomina" class="btn btn-success") Consultar nómina
-        .mb-3
-          a(href="/salarios" class="btn btn-warning") Modificar salarios y retenciones
-        .mb-3
-          a(href="/" class="btn btn-info") Ver resumen de gastos
-        .mb-3
-          a(href="/" class="btn btn-light") Ver historial de nómina
-        .mb-3
-          a(href="/" class="btn btn-warning") Modificar impuestos y deducciones 
-        .mb-3
-          a(href="/" class="btn btn-dark") Acceso a documentos importantes
-        .mb-3
-          a(href="#" class="btn btn-secondary") Actualizar información bancaria
-        .mb-3
-          a(href="#" onclick="abrirModalCerrarSesion()" class="btn btn-danger") Cerrar sesión
+        p Equipo 7
 
-  script.
-    //const rango = !{JSON.stringify(rango)};
-    const confirmLogoutModal = new bootstrap.Modal(document.getElementById('confirmLogoutModal'))
-    const abrirModalCerrarSesion = () => confirmLogoutModal.show()
-    const sinPermisos = () => alert("No tienes permisos para acceder a esta sección");
+      div#carouselExampleInterval.carousel.slide(data-bs-ride="carousel")
+        .carousel-inner
+          each img, index in ['/img/foto1.jpg', '/img/foto2.jpg', '/img/foto3.jpg','/img/foto4.jpg']
+            .carousel-item(class=index === 0 ? 'active' : '', data-bs-interval= '2500')
+              img.d-block.w-100.h-100(object-fit="cover", src=img, alt=`Slide ${index + 1}`)
+
+        button.carousel-control-prev(type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev")
+          span.carousel-control-prev-icon(aria-hidden="true")
+          span.visually-hidden Previous
+
+        button.carousel-control-next(type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next")
+          span.carousel-control-next-icon(aria-hidden="true")
+          span.visually-hidden Next
