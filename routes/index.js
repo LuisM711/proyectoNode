@@ -5,6 +5,7 @@ const principalController = require('../controllers/principalController');
 const usuariosController = require('../controllers/usuariosController');
 const nominaController = require('../controllers/nominaController');
 const salariosController = require('../controllers/salariosController');
+const prestamosController = require('../controllers/prestamosController');
 const verification = require("../middlewares/verification");
 
 module.exports = () => {
@@ -12,6 +13,7 @@ module.exports = () => {
   //router.get('/principal', principalController.principal);
   router.get('/usuarios', verification.revisarCookie, usuariosController.usuarios);
   router.get('/nomina', verification.revisarCookie, nominaController.nomina);
+  router.get('/prestamos', verification.revisarCookie, prestamosController.prestamos);
   router.get('/salarios', verification.revisarCookie, salariosController.salarios);
   router.get('/detallesDeducciones/:idEmpleado',verification.revisarCookie,salariosController.salariosDetalle);
   router.post('/auth', loginController.authenticate);

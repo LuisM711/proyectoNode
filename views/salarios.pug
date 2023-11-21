@@ -127,7 +127,7 @@ block content
       const detallesContent = document.getElementById(`detallesContent-${ID}`);
       const detalleInputs = detallesContent.querySelectorAll('div');
       detalleInputs.forEach((detalleInput) => {
-        const monto = detalleInput.querySelector('input[type="text"]').value;
+        const monto = detalleInput.querySelector('input[type="number"]').value;
         const descripcion = detalleInput.querySelector('input[type="text"]').value;
 
         // Validar el monto con una expresión regular para dinero

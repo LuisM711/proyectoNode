@@ -1,0 +1,48 @@
+extends layout
+
+block content
+  .container.mt-5
+    .row.justify-content-center
+      .col-md-6.text-center
+        h1 Bienvenido, {datos.Nombre}, al sistema de préstamos
+        p Tu deuda actual es de: 
+          span(style="color: red; font-weight: bold") ${datos.deuda}
+
+        // Formulario para solicitar un préstamo
+        form(id="prestamoForm")
+          .mb-3
+            label(for="monto", class="form-label") Monto del préstamo
+            input(type="number", class="form-control", id="monto", name="monto", placeholder="Ingrese el monto", required)
+          .mb-3
+            label(for="descripcion", class="form-label") Descripción del préstamo
+            input(type="text", class="form-control", id="descripcion", name="descripcion", placeholder="Ingrese la descripción", required)
+          button(type="button", class="btn btn-primary", onclick="solicitarPrestamo()") Solicitar Préstamo
+
+    script.
+      const solicitarPrestamo = () => {
+        const monto = document.getElementById("monto").value;
+        const descripcion = document.getElementById("descripcion").value;
+
+        // Validar que los campos no estén vacíos
+        if (!monto || !descripcion) {
+          alert("Por favor, complete todos los campos.");
+          return;
+        }
+
+        // Realizar la solicitud al backend
+        fetch("/requestPrestamo", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ monto, descripcion })
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Manejar la respuesta del servidor si es necesario
+          console.log(data);
+        })
+        .catch(error => {
+          console.error("Error al solicitar préstamo:", error);
+        });
+      };
