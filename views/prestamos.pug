@@ -4,9 +4,9 @@ block content
   .container.mt-5
     .row.justify-content-center
       .col-md-6.text-center
-        h1 Bienvenido, {datos.Nombre}, al sistema de préstamos
+        h1 Bienvenido, #{datos.Nombre}, al sistema de préstamos
         p Tu deuda actual es de: 
-          span(style="color: red; font-weight: bold") ${datos.deuda}
+          span(style="color: red; font-weight: bold") $#{datos.deuda}
 
         // Formulario para solicitar un préstamo
         form(id="prestamoForm")
@@ -22,14 +22,11 @@ block content
       const solicitarPrestamo = () => {
         const monto = document.getElementById("monto").value;
         const descripcion = document.getElementById("descripcion").value;
-
-        // Validar que los campos no estén vacíos
-        if (!monto || !descripcion) {
-          alert("Por favor, complete todos los campos.");
+        const montoRegex = /^\d+(\.\d{1,2})?$/;
+        if (!montoRegex.test(monto) || !descripcion) {
+          alert("Por favor, complete todos los campos de manera correcta.");
           return;
         }
-
-        // Realizar la solicitud al backend
         fetch("/requestPrestamo", {
           method: "POST",
           headers: {
@@ -39,8 +36,7 @@ block content
         })
         .then(response => response.json())
         .then(data => {
-          // Manejar la respuesta del servidor si es necesario
-          console.log(data);
+          alert(data.response);
         })
         .catch(error => {
           console.error("Error al solicitar préstamo:", error);

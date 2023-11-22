@@ -142,7 +142,7 @@ block content
       });
       if (flag) return;
       const cuerpo = JSON.stringify({ sueldoMensual, detalles });
-      console.log(cuerpo);
+      //console.log(cuerpo);
 
       // Realizar la petición al backend para guardar los detalles
       fetch(`/guardarDetallesEmpleado/${ID}`, {
@@ -154,7 +154,7 @@ block content
       })
         .then(response => response.json())
         .then(resultado => {
-          console.log(resultado);
+          //console.log(resultado);
           location.reload();
         })
         .catch(error => console.error(error));

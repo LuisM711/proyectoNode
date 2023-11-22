@@ -1,6 +1,3 @@
-/*
-
-*/
 class EmpleadoModel {
     static actualizarSueldoDeducciones(db, idEmp, sueldo, detalles, callback) {
         let sql = `UPDATE empleados SET SueldoMensual = ? WHERE IDEmp = ?;`;
