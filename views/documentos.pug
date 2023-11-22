@@ -1,0 +1,42 @@
+extends layout
+
+block content
+  .container.mt-5
+    .row.justify-content-center
+      .col-md-6.text-center
+        h1 Documentos importantes
+
+    .row.justify-content-center
+      .col-md-6
+        .card
+          .card-body.text-center
+            button.btn.btn-primary(data-bs-toggle="modal" data-bs-target="#avisoModal") Aviso de Privacidad
+            button.btn.btn-primary(data-bs-toggle="modal" data-bs-target="#terminosModal") Términos y Condiciones
+  .modal.fade#avisoModal(tabindex="-1" aria-labelledby="avisoModalLabel" aria-hidden="true")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          h5.modal-title#avisoModalLabel Aviso de Privacidad
+          button.btn-close(data-bs-dismiss="modal" aria-label="Close" type="button")
+        .modal-body
+          iframe(src="/pdf/documentos/AvisoPrivacidad.pdf", width="100%", height="800px", frameborder="0") // Ajusta la altura según sea necesario
+  .modal.fade#terminosModal(tabindex="-1" aria-labelledby="terminosModalLabel" aria-hidden="true")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          h5.modal-title#terminosModalLabel Términos y Condiciones
+          button.btn-close(data-bs-dismiss="modal" aria-label="Close" type="button")
+        .modal-body
+          iframe(src="/pdf/documentos/terminos.pdf", width="100%", height="800px", frameborder="0") // Ajusta la altura según sea necesario
+
+    script.
+        document.addEventListener('DOMContentLoaded', function () {
+            const screenSize = window.innerWidth * window.innerHeight;
+            const isLargeScreen = screenSize > 1920 * 1080;
+
+            const avisoModal = new bootstrap.Modal(document.getElementById('avisoModal'));
+            avisoModal._element.classList.add(isLargeScreen ? 'modal-xl' : 'modal-lg');
+
+            const terminosModal = new bootstrap.Modal(document.getElementById('terminosModal'));
+            terminosModal._element.classList.add(isLargeScreen ? 'modal-xl' : 'modal-lg');
+        });

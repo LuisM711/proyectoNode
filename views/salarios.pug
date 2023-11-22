@@ -42,7 +42,7 @@ block content
                   <label for="sueldoMensual">Sueldo Mensual:</label>
                   <input type="number" id="sueldoMensual" name="sueldoMensual" value="${empleadosData.find(e => e.IDEmp === ID).SueldoMensual}" required>
                   <div id="detallesContent-${ID}"></div>
-                  <button type="button" onclick="agregarFila(${ID})">Agregar</button>
+                  <button type="button" class="btn btn-success" onclick="agregarFila(${ID})">Agregar</button>
                 </form>
               </div>
               <div class="modal-footer">
@@ -53,6 +53,7 @@ block content
           </div>
         </div>
       `;
+
 
       // Insertar el modal en el cuerpo del documento
       document.body.insertAdjacentHTML('beforeend', modalContent);
@@ -73,7 +74,7 @@ block content
                 <input type="number" id="monto-${index}" name="monto-${index}" value="${detalle.MONTO}" required>
                 <label for="descripcion-${index}">Descripción:</label>
                 <input type="text" id="descripcion-${index}" name="descripcion-${index}" value="${detalle.DESCRIPCION}" required>
-                <button type="button" onclick="eliminarFila(${ID}, ${index})">Eliminar</button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(${ID}, ${index})">Eliminar</button>
               </div>
             `;
           });
@@ -95,9 +96,10 @@ block content
           <input type="number" id="monto-${index}" name="monto-${index}" required>
           <label for="descripcion-${index}">Descripción:</label>
           <input type="text" id="descripcion-${index}" name="descripcion-${index}" required>
-          <button type="button" onclick="eliminarFila(${ID}, ${index})">Eliminar</button>
+          <button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(${ID}, ${index})">Eliminar</button>
         </div>
       `;
+
     };
 
     const eliminarFila = (ID, index) => {

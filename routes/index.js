@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const loginController = require('../controllers/loginController');
 const usuariosController = require('../controllers/usuariosController');
+const documentosimportantesController = require('../controllers/documentosController');
 const nominaController = require('../controllers/nominaController');
 const solicitudesController = require('../controllers/solicitudesController');
 const salariosController = require('../controllers/salariosController');
@@ -13,6 +14,7 @@ module.exports = () => {
   router.get('/usuarios', verification.revisarCookie, usuariosController.usuarios);
   router.get('/solicitudes', verification.revisarCookie, solicitudesController.solicitudes);
   router.get('/nomina', verification.revisarCookie, nominaController.nomina);
+  router.get('/documentosimportantes', verification.revisarCookie, documentosimportantesController.documentosimportantes);
   router.get('/prestamos', verification.revisarCookie, prestamosController.prestamos);
   router.get('/salarios', verification.revisarCookie, salariosController.salarios);
   router.get('/detallesDeducciones/:idEmpleado',verification.revisarCookie,salariosController.salariosDetalle);
@@ -24,6 +26,7 @@ module.exports = () => {
   router.post('/auth', loginController.authenticate);
   
   router.put('/guardarDetallesEmpleado/:idEmpleado',verification.revisarCookie, salariosController.actualizarDatos);
+  
   router.delete('/aprobacionPrestamo', verification.revisarCookie, solicitudesController.aprobacionPrestamo);
 
   return router;

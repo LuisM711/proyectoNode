@@ -8,7 +8,6 @@ module.exports.solicitudes = (req, res) => {
             console.error('Error al guardar cambios en la base de datos: ' + err.message);
             //callback(err, null);
         } else {
-            //console.log(results);
             res.render('solicitudes',
             {
                 datos: {
