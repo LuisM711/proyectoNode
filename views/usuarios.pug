@@ -1,29 +1,30 @@
 extends layout
 block content
-    .container.mt-5
-      .row
-        .col-md-10.mx-auto
-          .table-responsive
-            table.table.table-striped
-              thead
-                tr
-                  th ID del Empleado
-                  th Nombre de usuario
-                  th Nombre 
-                  th Apellido Paterno
-                  th Apellido Materno
-                  th Rango
-                  th Usuario Dado de Alta
-              tbody
-                each empleado in empleadosData
-                  tr(class=empleado.Alta ? 'table-success' : 'table-danger', data-bs-toggle="modal" data-bs-target="#userModal" data-idemp="#{empleado.IDEmp}" data-username="#{empleado.Usuario}" data-cargo="#{empleado.Rango}" data-alta="#{empleado.Alta ? 'Si' : 'No'}" data-direccion="#{empleado.Direccion}" data-celular="#{empleado.Celular}" data-rfc="#{empleado.RFC}" data-nss="#{empleado.NSS}" data-curp="#{empleado.CURP}")
-                    td= empleado.IDEmp
-                    td= empleado.Usuario
-                    td= empleado.Nombre
-                    td= empleado.ApellidoPaterno 
-                    td= empleado.ApellidoMaterno
-                    td= empleado.Rango
-                    td= empleado.Alta ? 'Si' : 'No'
+  .container.mt-5
+    .row
+      .col-md-10.mx-auto
+        .table-responsive
+          table.table.table-striped
+            thead
+              tr
+                th ID del Empleado
+                th Nombre de usuario
+                th Nombre 
+                th Apellido Paterno
+                th Apellido Materno
+                th Rango
+                th Usuario Dado de Alta
+            tbody
+              each empleado in empleadosData
+                tr(class=empleado.Alta ? 'table-success' : 'table-danger', data-bs-toggle="modal" data-bs-target="#userModal" data-idemp="#{empleado.IDEmp}" data-username="#{empleado.Usuario}" data-cargo="#{empleado.Rango}" data-alta="#{empleado.Alta ? 'Si' : 'No'}" data-direccion="#{empleado.Direccion}" data-celular="#{empleado.Celular}" data-rfc="#{empleado.RFC}" data-nss="#{empleado.NSS}" data-curp="#{empleado.CURP}")
+                  td= empleado.IDEmp
+                  td= empleado.Usuario
+                  td= empleado.Nombre
+                  td= empleado.ApellidoPaterno 
+                  td= empleado.ApellidoMaterno
+                  td= empleado.Rango
+                  td= empleado.Alta ? 'Si' : 'No'
+          button#addUserBtn.btn.btn-success(type="button") Agregar nuevo empleado
         .modal.fade#userModal(tabindex="-1")
           .modal-dialog.modal-dialog-centered.modal-lg
             .modal-content
@@ -58,7 +59,7 @@ block content
                     .col-md-3
                       label(for="celular", class="form-label") Celular del Usuario
                       input(type="text", class="form-control", id="celular", name="celular", placeholder="Celular de usuario", required)
-                    .mb-4.row
+                  .mb-4.row
                     .col-md-3
                       label(for="RFC", class="form-label") RFC
                       input(type="text", class="form-control", id="RFC", name="RFC", placeholder="RFC del usuario", required)
@@ -83,7 +84,71 @@ block content
 
                   .mb-3.row
                     .col-md-12
+                      //button#saveUserBtn.btn.btn-primary(type="button") Guardar
                       button(type="submit", class="btn btn-primary btn-block") Guardar Cambios
+              .modal-footer
+                button.btn.btn-secondary(type="button" data-bs-dismiss="modal" aria-label="Close") Cancelar
+        .modal.fade#addUserModal(tabindex="-1")
+          .modal-dialog.modal-dialog-centered.modal-lg
+            .modal-content
+              .modal-header
+                h5.modal-title#addUserModalLabel Agregar Nuevo Empleado
+                button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+              .modal-body
+                form(id="addUserForm", action="/agregarUsuario", method="POST")
+                  .mb-4.row
+                    .col-md-3
+                      label(for="idEmpleado", class="form-label") ID del empleado
+                      input(type="text", class="form-control", id="add_idEmpleado", name="idEmpleado", placeholder="ID del empleado", readonly=true, required)
+                    .col-md-3
+                      label(for="nombreEmpleado", class="form-label") Nombre del empleado
+                      input(type="text", class="form-control", id="add_nombreEmpleado", name="nombreEmpleado", placeholder="Nombre empleado", required)
+                    .col-md-3
+                      label(for="apellidoPaterno", class="form-label") Apellido paterno
+                      input(type="text", class="form-control", id="add_apellidoPaterno", name="apellidoPaterno", placeholder="Apellido paterno", required)
+                    .col-md-3
+                      label(for="apellidoMaterno", class="form-label") Apellido materno
+                      input(type="text", class="form-control", id="add_apellidoMaterno", name="apellidoMaterno", placeholder="Apellido materno", required)
+                  .mb-4.row
+                    .col-md-3
+                      label(for="username", class="form-label") Nombre de Usuario
+                      input(type="text", class="form-control", id="add_username", name="username", placeholder="Nombre de usuario", required)
+                    .col-md-3
+                      label(for="password", class="form-label") Contraseña del usuario
+                      input(type="text", class="form-control", id="add_password", name="password", placeholder="Contraseña de usuario", required)
+                    .col-md-3
+                      label(for="direccion", class="form-label") Dirección
+                      input(type="text", class="form-control", id="add_direccion", name="direccion", placeholder="Direccion del usuario", required)
+                    .col-md-3
+                      label(for="celular", class="form-label") Celular del Usuario
+                      input(type="text", class="form-control", id="add_celular", name="celular", placeholder="Celular de usuario", required)
+                  .mb-4.row
+                    .col-md-3
+                      label(for="RFC", class="form-label") RFC
+                      input(type="text", class="form-control", id="add_RFC", name="RFC", placeholder="RFC del usuario", required)
+                    .col-md-3
+                      label(for="NSS", class="form-label") NSS
+                      input(type="text", class="form-control", id="add_NSS", name="NSS", placeholder="NSS del usuario", required)
+                    .col-md-3
+                      label(for="CURP", class="form-label") CURP
+                      input(type="text", class="form-control", id="add_CURP", name="CURP", placeholder="CURP del usuario", required)
+                    .col-md-3
+                      label(for="sueldo", class="form-label") Sueldo mensual
+                      input(type="number", class="form-control", id="add_sueldo", name="sueldo", placeholder="Sueldo del usuario", required)
+                    .col-md-3
+                      label(for="role", class="form-label") Rango
+                      select.form-select#add_role(name="role", required)
+                        each cargo in cargosData
+                          option(value=cargo.IDCargos)= cargo.Cargos
+                    .col-md-3
+                      .form-check
+                        input(type="checkbox", class="form-check-input", id="add_active", name="isActive")
+                        label.form-check-label(for="active") Usuario Dado de Alta
+
+                  .mb-3.row
+                    .col-md-12
+                      //button#addUserBtnModal.btn.btn-success(type="button") Agregar
+                      button(type="submit", class="btn btn-success btn-block") Agregar Nuevo Usuario
               .modal-footer
                 button.btn.btn-secondary(type="button" data-bs-dismiss="modal" aria-label="Close") Cancelar
     script.
@@ -92,35 +157,101 @@ block content
       const cargosData = !{JSON.stringify(cargosData)}; // Convierte cargosData a objeto JavaScript
       const empleadosData = !{JSON.stringify(empleadosData)}; // Convierte cargosData a objeto JavaScript
       let userModal = new bootstrap.Modal(document.getElementById("userModal"));
+
+      const updateUser = (idEmp) => {
+        const userModal = new bootstrap.Modal(document.getElementById("userModal"));
+        const userModalLabel = document.getElementById("userModalLabel");
+        const userForm = document.getElementById("userForm");
+        const modalInputs = userForm.querySelectorAll("input, select, textarea");
+        userModal.show();
+
+        fetch(`/empleados/${idEmp}`)
+          .then(response => response.json())
+          .then(empleado => {
+            empleado = empleado[0];
+            document.getElementById("idEmpleado").value = empleado.IDEmp;
+            document.getElementById("nombreEmpleado").value = empleado.Nombre;
+            document.getElementById("apellidoPaterno").value = empleado.ApellidoPaterno;
+            document.getElementById("apellidoMaterno").value = empleado.ApellidoMaterno;
+            document.getElementById("password").value = empleado.Contra;
+            document.getElementById("sueldo").value = empleado.SueldoMensual;
+            document.getElementById("username").value = empleado.Usuario;
+            document.getElementById("role").value = empleado.Cargo;
+            document.getElementById("active").checked = empleado.Alta;
+            document.getElementById("direccion").value = empleado.Direccion;
+            document.getElementById("celular").value = empleado.Celular;
+            document.getElementById("RFC").value = empleado.RFC;
+            document.getElementById("NSS").value = empleado.NSS;
+            document.getElementById("CURP").value = empleado.CURP;
+            userModalLabel.textContent = `Información del Usuario ${idEmp}`;
+          })
+          .catch(error => console.error(error));
+      };
+
+      const addUser = () => {
+        const userModal = new bootstrap.Modal(document.getElementById("addUserModal"));
+        const userForm = document.getElementById("addUserForm");
+        const modalInputs = userForm.querySelectorAll("input, select, textarea");
+
+        // Limpiar los campos del formulario
+        modalInputs.forEach(input => input.value = '');
+
+        // Establecer título del modal
+        const addUserModalLabel = document.getElementById("addUserModalLabel");
+        addUserModalLabel.textContent = "Agregar Nuevo Empleado";
+        const idEmpleado = document.getElementById("add_idEmpleado");
+        idEmpleado.value = "Automatico";
+        // Abrir el modal
+        userModal.show();
+      };
+
+      const agregarUsuario = () => {
+        // Obtener los datos del formulario
+        const idEmpleado = document.getElementById("idEmpleado").value;
+        const nombre = document.getElementById("nombreEmpleado").value;
+        const apellidoPaterno = document.getElementById("apellidoPaterno").value;
+        const apellidoMaterno = document.getElementById("apellidoMaterno").value;
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const sueldo = document.getElementById("sueldo").value;
+        const role = document.getElementById("role").value;
+        const isActive = document.getElementById("active").checked;
+        const direccion = document.getElementById("direccion").value;
+        const celular = document.getElementById("celular").value;
+        const RFC = document.getElementById("RFC").value;
+        const NSS = document.getElementById("NSS").value;
+        const CURP = document.getElementById("CURP").value;
+
+        // Construir el objeto JSON con los datos
+        const userData = {
+          idEmpleado,
+          nombre,
+          apellidoPaterno,
+          apellidoMaterno,
+          username,
+          password,
+          sueldo,
+          role,
+          isActive,
+          direccion,
+          celular,
+          RFC,
+          NSS,
+          CURP
+        };
+
+        // Imprimir el objeto JSON en la consola (puedes enviarlo al backend desde aquí)
+        console.log(userData);
+      };
+
       tableRows.forEach((row) => {
         row.addEventListener("click", () => {
           const cells = row.querySelectorAll("td");
           const IDEmp = cells[0].textContent;
-          //alert(IDEmp);
-          fetch(`/empleados/${IDEmp}`)
-            .then(response => response.json())
-            .then(empleado => {
-              empleado = empleado[0];
-              //console.log(empleado);
-              document.getElementById("idEmpleado").value = empleado.IDEmp;
-              document.getElementById("nombreEmpleado").value = empleado.Nombre;
-              document.getElementById("apellidoPaterno").value = empleado.ApellidoPaterno;
-              document.getElementById("apellidoMaterno").value = empleado.ApellidoMaterno;
-              document.getElementById("password").value = empleado.Contra;
-              document.getElementById("sueldo").value = empleado.SueldoMensual;
-              document.getElementById("username").value = empleado.Usuario;
-              document.getElementById("role").value = empleado.Cargo;
-              document.getElementById("active").checked = empleado.Alta;
-              document.getElementById("direccion").value = empleado.Direccion;
-              document.getElementById("celular").value = empleado.Celular;
-              document.getElementById("RFC").value = empleado.RFC;
-              document.getElementById("NSS").value = empleado.NSS;
-              document.getElementById("CURP").value = empleado.CURP;
-              userModalLabel.textContent = `Información del Usuario ${IDEmp}`;
-            })
-            .catch(error => console.error(error));
+          updateUser(IDEmp);
         });
       });
+
       // Función para actualizar el modal al hacer clic en una fila de la tabla
       userModal = document.getElementById("userModal");
       const userModalLabel = document.getElementById("userModalLabel");
@@ -131,3 +262,9 @@ block content
           input.value = "";
         });
       });
+
+      // Función para agregar un nuevo usuario
+      const addUserBtn = document.getElementById("addUserBtn");
+      addUserBtn.addEventListener("click", addUser);
+      //- const saveUserBtn = document.getElementById("saveUserBtn");
+      //- saveUserBtn.addEventListener("click", agregarUsuario);
