@@ -11,10 +11,10 @@ const verification = require("../middlewares/verification");
 
 module.exports = () => {
   router.get('/', loginController.login);
+  router.get('/documentosimportantes', documentosimportantesController.documentosimportantes);
   router.get('/usuarios', verification.revisarCookie, usuariosController.usuarios);
   router.get('/solicitudes', verification.revisarCookie, solicitudesController.solicitudes);
   router.get('/nomina', verification.revisarCookie, nominaController.nomina);
-  router.get('/documentosimportantes', verification.revisarCookie, documentosimportantesController.documentosimportantes);
   router.get('/prestamos', verification.revisarCookie, prestamosController.prestamos);
   router.get('/salarios', verification.revisarCookie, salariosController.salarios);
   router.get('/detallesDeducciones/:idEmpleado',verification.revisarCookie,salariosController.salariosDetalle);
