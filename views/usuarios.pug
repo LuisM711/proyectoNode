@@ -32,38 +32,51 @@ block content
                 button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
               .modal-body
                 form(id="userForm", action="/guardarCambios", method="POST")
-                  .mb-3.row
-                    .col-md-4
-                      label(for="idEmpleado", class="form-label") ID del Empleado
+                  .mb-4.row
+                    .col-md-3
+                      label(for="idEmpleado", class="form-label") ID del empleado
                       input(type="text", class="form-control", id="idEmpleado", name="idEmpleado", placeholder="ID del empleado", readonly=true, required)
-                    .col-md-4
+                    .col-md-3
+                      label(for="nombreEmpleado", class="form-label") Nombre del empleado
+                      input(type="text", class="form-control", id="nombreEmpleado", name="nombreEmpleado", placeholder="Nombre empleado", required)
+                    .col-md-3
+                      label(for="apellidoPaterno", class="form-label") Apellido paterno
+                      input(type="text", class="form-control", id="apellidoPaterno", name="apellidoPaterno", placeholder="Apellido paterno", required)
+                    .col-md-3
+                      label(for="apellidoMaterno", class="form-label") Apellido materno
+                      input(type="text", class="form-control", id="apellidoMaterno", name="apellidoMaterno", placeholder="Apellido materno", required)
+                  .mb-4.row
+                    .col-md-3
                       label(for="username", class="form-label") Nombre de Usuario
                       input(type="text", class="form-control", id="username", name="username", placeholder="Nombre de usuario", required)
-                    .col-md-4
+                    .col-md-3
+                      label(for="password", class="form-label") Contraseña del usuario
+                      input(type="text", class="form-control", id="password", name="password", placeholder="Contraseña de usuario", required)
+                    .col-md-3
                       label(for="direccion", class="form-label") Dirección
                       input(type="text", class="form-control", id="direccion", name="direccion", placeholder="Direccion del usuario", required)
-
-                  .mb-3.row
-                    .col-md-4
+                    .col-md-3
                       label(for="celular", class="form-label") Celular del Usuario
                       input(type="text", class="form-control", id="celular", name="celular", placeholder="Celular de usuario", required)
-                    .col-md-4
-                      label(for="RFC", class="form-label") RFC del Usuario
+                    .mb-4.row
+                    .col-md-3
+                      label(for="RFC", class="form-label") RFC
                       input(type="text", class="form-control", id="RFC", name="RFC", placeholder="RFC del usuario", required)
-                    .col-md-4
-                      label(for="NSS", class="form-label") NSS del Usuario
+                    .col-md-3
+                      label(for="NSS", class="form-label") NSS
                       input(type="text", class="form-control", id="NSS", name="NSS", placeholder="NSS del usuario", required)
-
-                  .mb-3.row
-                    .col-md-4
-                      label(for="CURP", class="form-label") CURP del Usuario
+                    .col-md-3
+                      label(for="CURP", class="form-label") CURP
                       input(type="text", class="form-control", id="CURP", name="CURP", placeholder="CURP del usuario", required)
-                    .col-md-4
+                    .col-md-3
+                      label(for="sueldo", class="form-label") Sueldo mensual
+                      input(type="number", class="form-control", id="sueldo", name="sueldo", placeholder="Sueldo del usuario", required)
+                    .col-md-3
                       label(for="role", class="form-label") Rango
                       select.form-select#role(name="role", required)
                         each cargo in cargosData
                           option(value=cargo.IDCargos)= cargo.Cargos
-                    .col-md-4
+                    .col-md-3
                       .form-check
                         input(type="checkbox", class="form-check-input", id="active", name="isActive")
                         label.form-check-label(for="active") Usuario Dado de Alta
@@ -90,6 +103,11 @@ block content
               empleado = empleado[0];
               //console.log(empleado);
               document.getElementById("idEmpleado").value = empleado.IDEmp;
+              document.getElementById("nombreEmpleado").value = empleado.Nombre;
+              document.getElementById("apellidoPaterno").value = empleado.ApellidoPaterno;
+              document.getElementById("apellidoMaterno").value = empleado.ApellidoMaterno;
+              document.getElementById("password").value = empleado.Contra;
+              document.getElementById("sueldo").value = empleado.SueldoMensual;
               document.getElementById("username").value = empleado.Usuario;
               document.getElementById("role").value = empleado.Cargo;
               document.getElementById("active").checked = empleado.Alta;

@@ -1,7 +1,7 @@
 class EmpleadoModel {
     static actualizarSueldoDeducciones(db, idEmp, sueldo, detalles, callback) {
         let sql = `UPDATE empleados SET SueldoMensual = ? WHERE IDEmp = ?;`;
-    
+
         db.query(sql, [sueldo, idEmp], (err, results) => {
             if (err) {
                 console.error('Error en la consulta: ' + err.message);
@@ -21,7 +21,7 @@ class EmpleadoModel {
                                 sql = "INSERT INTO descuentos (IDEmp, Monto, Descripcion) VALUES (?, ?, ?);";
                                 return db.query(sql, [idEmp, element.MONTO, element.DESCRIPCION]);
                             });
-    
+
                             Promise.all(insertPromises)
                                 .then(() => {
                                     // Todas las inserciones de descuentos fueron exitosas
@@ -40,8 +40,8 @@ class EmpleadoModel {
             }
         });
     }
-    
-    
+
+
     // static authenticate(req, Usuario, Contra, callback) {
     //     const sql = 'SELECT * FROM empleados WHERE Usuario = ? AND Contra = ?';
 
@@ -94,16 +94,7 @@ class EmpleadoModel {
             } else {
                 const sql = `
                     SELECT
-                    e.IDEmp,
-                    e.Usuario,
-                    e.Cargo,
-                    c.Cargos AS Rango,
-                    e.Alta,
-                    e.Direccion,
-                    e.Celular,
-                    e.RFC,
-                    e.NSS,
-                    e.CURP
+                    *
                     FROM nomina.empleados AS e
                     INNER JOIN nomina.cargos AS c ON e.Cargo = c.IDCargos
                     WHERE e.IDEmp = ?;
@@ -170,9 +161,8 @@ class EmpleadoModel {
     }
     static actualizarEmpleado(db, datos, callback) {
         //console.log(datos);
-        const sql = "UPDATE empleados SET Usuario = ?, Cargo = ?, Alta = ?, Direccion = ?, Celular = ?, RFC = ?, NSS = ?, CURP = ? WHERE IDEmp = ?";
-        const values = [datos.username, datos.role, datos.isActive === "on" || false, datos.direccion, datos.celular, datos.RFC, datos.NSS, datos.CURP, datos.idEmpleado];
-
+        const sql = "UPDATE empleados SET Nombre = ?, ApellidoPaterno = ?, ApellidoMaterno = ?, Usuario = ?, Contra = ?, Cargo = ?, Alta = ?, Direccion = ?, Celular = ?, RFC = ?, NSS = ?, CURP = ?, SueldoMensual = ? WHERE IDEmp = ?";
+        const values = [datos.nombreEmpleado, datos.apellidoPaterno, datos.apellidoMaterno, datos.username, datos.password, datos.role, datos.isActive === "on", datos.direccion, datos.celular, datos.RFC, datos.NSS, datos.CURP, datos.sueldo, datos.idEmpleado];
         db.query(sql, values, (err, results) => {
             if (err) {
                 console.error('Error al guardar cambios en la base de datos: ' + err.message);
