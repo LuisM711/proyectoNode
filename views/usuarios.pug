@@ -13,10 +13,11 @@ block content
                 th Apellido Paterno
                 th Apellido Materno
                 th Rango
-                th Usuario Dado de Alta
+                th Activo
             tbody
               each empleado in empleadosData
-                tr(class=empleado.Alta ? 'table-success' : 'table-danger', data-bs-toggle="modal" data-bs-target="#userModal" data-idemp="#{empleado.IDEmp}" data-username="#{empleado.Usuario}" data-cargo="#{empleado.Rango}" data-alta="#{empleado.Alta ? 'Si' : 'No'}" data-direccion="#{empleado.Direccion}" data-celular="#{empleado.Celular}" data-rfc="#{empleado.RFC}" data-nss="#{empleado.NSS}" data-curp="#{empleado.CURP}")
+                //tr(class=empleado.Alta ? 'table-success' : 'table-danger', data-bs-toggle="modal" data-bs-target="#updateUserModal" data-idemp="#{empleado.IDEmp}" data-username="#{empleado.Usuario}" data-cargo="#{empleado.Rango}" data-alta="#{empleado.Alta ? 'Si' : 'No'}" data-direccion="#{empleado.Direccion}" data-celular="#{empleado.Celular}" data-rfc="#{empleado.RFC}" data-nss="#{empleado.NSS}" data-curp="#{empleado.CURP}")
+                tr(class=empleado.Alta ? 'table-success' : 'table-danger')
                   td= empleado.IDEmp
                   td= empleado.Usuario
                   td= empleado.Nombre
@@ -25,7 +26,7 @@ block content
                   td= empleado.Rango
                   td= empleado.Alta ? 'Si' : 'No'
           button#addUserBtn.btn.btn-success(type="button") Agregar nuevo empleado
-        .modal.fade#userModal(tabindex="-1")
+        .modal.fade#updateUserModal(tabindex="-1")
           .modal-dialog.modal-dialog-centered.modal-lg
             .modal-content
               .modal-header
@@ -80,7 +81,7 @@ block content
                     .col-md-3
                       .form-check
                         input(type="checkbox", class="form-check-input", id="active", name="isActive")
-                        label.form-check-label(for="active") Usuario Dado de Alta
+                        label.form-check-label(for="active") Activo
 
                   .mb-3.row
                     .col-md-12
@@ -143,7 +144,7 @@ block content
                     .col-md-3
                       .form-check
                         input(type="checkbox", class="form-check-input", id="add_active", name="isActive")
-                        label.form-check-label(for="active") Usuario Dado de Alta
+                        label.form-check-label(for="active") Activo
 
                   .mb-3.row
                     .col-md-12
@@ -152,14 +153,13 @@ block content
               .modal-footer
                 button.btn.btn-secondary(type="button" data-bs-dismiss="modal" aria-label="Close") Cancelar
     script.
-      // Función para actualizar el formulario al hacer clic en una fila de la tabla
       const tableRows = document.querySelectorAll("tbody tr");
-      const cargosData = !{JSON.stringify(cargosData)}; // Convierte cargosData a objeto JavaScript
-      const empleadosData = !{JSON.stringify(empleadosData)}; // Convierte cargosData a objeto JavaScript
-      let userModal = new bootstrap.Modal(document.getElementById("userModal"));
+      const cargosData = !{JSON.stringify(cargosData)};
+      const empleadosData = !{JSON.stringify(empleadosData)};
+      let userModal = new bootstrap.Modal(document.getElementById("updateUserModal"));
 
       const updateUser = (idEmp) => {
-        const userModal = new bootstrap.Modal(document.getElementById("userModal"));
+        const userModal = new bootstrap.Modal(document.getElementById("updateUserModal"));
         const userModalLabel = document.getElementById("userModalLabel");
         const userForm = document.getElementById("userForm");
         const modalInputs = userForm.querySelectorAll("input, select, textarea");
@@ -204,46 +204,6 @@ block content
         // Abrir el modal
         userModal.show();
       };
-
-      const agregarUsuario = () => {
-        // Obtener los datos del formulario
-        const idEmpleado = document.getElementById("idEmpleado").value;
-        const nombre = document.getElementById("nombreEmpleado").value;
-        const apellidoPaterno = document.getElementById("apellidoPaterno").value;
-        const apellidoMaterno = document.getElementById("apellidoMaterno").value;
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
-        const sueldo = document.getElementById("sueldo").value;
-        const role = document.getElementById("role").value;
-        const isActive = document.getElementById("active").checked;
-        const direccion = document.getElementById("direccion").value;
-        const celular = document.getElementById("celular").value;
-        const RFC = document.getElementById("RFC").value;
-        const NSS = document.getElementById("NSS").value;
-        const CURP = document.getElementById("CURP").value;
-
-        // Construir el objeto JSON con los datos
-        const userData = {
-          idEmpleado,
-          nombre,
-          apellidoPaterno,
-          apellidoMaterno,
-          username,
-          password,
-          sueldo,
-          role,
-          isActive,
-          direccion,
-          celular,
-          RFC,
-          NSS,
-          CURP
-        };
-
-        // Imprimir el objeto JSON en la consola (puedes enviarlo al backend desde aquí)
-        console.log(userData);
-      };
-
       tableRows.forEach((row) => {
         row.addEventListener("click", () => {
           const cells = row.querySelectorAll("td");
@@ -253,7 +213,7 @@ block content
       });
 
       // Función para actualizar el modal al hacer clic en una fila de la tabla
-      userModal = document.getElementById("userModal");
+      userModal = document.getElementById("updateUserModal");
       const userModalLabel = document.getElementById("userModalLabel");
       const userForm = document.getElementById("userForm");
       const modalInputs = userForm.querySelectorAll("input, select, textarea");

@@ -17,28 +17,43 @@ block content
             label(for="descripcion", class="form-label") Descripción del préstamo
             input(type="text", class="form-control", id="descripcion", name="descripcion", placeholder="Ingrese la descripción", required)
           button(type="button", class="btn btn-primary", onclick="solicitarPrestamo()") Solicitar Préstamo
+  .toast-container.position-fixed.bottom-0.end-0.p-3
+    #liveToast.toast(role="alert" aria-live="assertive" aria-atomic="true")
+      .toast-header
+        strong.me-auto Equipo 7
+        small Justo ahora
+        button.btn-close(type="button" data-bs-dismiss="toast" aria-label="Close")
+      .toast-body
+        | Prestamo solicitado exitosamente!
+  script.
+    const options = {
+      animation: true,
+      autohide: true,
+      delay: 3000 
+    };
 
-    script.
-      const solicitarPrestamo = () => {
-        const monto = document.getElementById("monto").value;
-        const descripcion = document.getElementById("descripcion").value;
-        const montoRegex = /^\d+(\.\d{1,2})?$/;
-        if (!montoRegex.test(monto) || !descripcion) {
-          alert("Por favor, complete todos los campos de manera correcta.");
-          return;
-        }
-        fetch("/requestPrestamo", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ monto, descripcion })
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert(data.response);
-        })
-        .catch(error => {
-          console.error("Error al solicitar préstamo:", error);
-        });
-      };
+    solicitarPrestamo = () => {
+    const monto = document.getElementById("monto").value;
+    const descripcion = document.getElementById("descripcion").value;
+    const montoRegex = /^\d+(\.\d{1,2})?$/;
+    if (!montoRegex.test(monto) || !descripcion) {
+      alert("Por favor, complete todos los campos de manera correcta.");
+      return;
+    }
+    fetch("/requestPrestamo", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ monto, descripcion })
+    })
+    .then(response => response.json())
+    .then(data => {
+      const toastLiveExample = document.getElementById('liveToast');
+      const toastBootstrap = new bootstrap.Toast(toastLiveExample, options);
+      toastBootstrap.show();
+    })
+    .catch(error => {
+      console.error("Error al solicitar préstamo:", error);
+    });
+    }
