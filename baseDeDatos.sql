@@ -1,6 +1,6 @@
 /*
 SQLyog Ultimate v13.1.1 (64 bit)
-MySQL - 8.2.0 : Database - nomina
+MySQL - 8.0.33 : Database - nomina
 *********************************************************************
 */
 
@@ -98,7 +98,7 @@ DROP TABLE IF EXISTS `descuentos`;
 CREATE TABLE `descuentos` (
   `IDEmp` int NOT NULL,
   `Monto` float(8,0) NOT NULL,
-  `Descripcion` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
+  `Descripcion` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `descuentos` */
@@ -140,7 +140,7 @@ insert  into `empleados`(`IDEmp`,`Nombre`,`ApellidoPaterno`,`ApellidoMaterno`,`U
 (1,'Luis Mario','Lopez','Reyes','luis74','1234',1,'Bosque de Olmos #1871','6682212484',1,'LORL031220DV7','39239','LORL031220HSLPYSA9',10000),
 (2,'Ramon','Ruiz','Castro','ramon','12',1,'Mansion','6668882234',4,'3920320','9430340w','90ds90',20000),
 (3,'Ana Gabriela','Zepeda','Ramirez','puppy92','1245',0,'Delicias','6683512874',1,'39394309','49340349','0s90fd90',30001),
-(4,'Andrikk','Gomezz','Valdezz','kirna099','09122',0,'Puentee','6683273265',3,'20932900','32893983200','90c0c90d00',40001);
+(4,'Andrik','Gomez','Valdez','kirna09','0912',0,'Puente','6683273265',3,'2093290','3289398320','90c0c90d0',4000);
 
 /*Table structure for table `peticionesprestamos` */
 
@@ -153,10 +153,6 @@ CREATE TABLE `peticionesprestamos` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `peticionesprestamos` */
-
-insert  into `peticionesprestamos`(`IDEmp`,`Monto`,`Descripcion`) values 
-(1,10000.00,'fin de semana'),
-(1,10000.00,'vacaciones');
 
 /*Table structure for table `porcentajesimss` */
 
