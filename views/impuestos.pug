@@ -1,0 +1,85 @@
+extends layout
+
+block content
+  .container.mt-5
+    .row.justify-content-center
+      .col-md-8.text-center
+        h1 Modificar impuestos y deducciones
+
+        // Botón para agregar nuevo impuesto
+        button#agregarImpuestoBtn.btn.btn-success(type="button" data-bs-toggle="modal" data-bs-target="#impuestoModal") Agregar Nuevo Impuesto
+
+        // Tabla para mostrar impuestos
+        table.table.table-striped
+          thead
+            tr
+              th Nombre
+              th Porcentaje
+              th Última Actualización
+              th Acciones
+          tbody
+            each impuesto in datos
+              tr
+                td= impuesto.nombre
+                td= impuesto.porcentaje
+                td= impuesto.ultimaActualizacion
+                td
+                  // Botones para modificar y borrar impuesto
+                  button.btn.btn-primary.btn-sm(type="button" data-bs-toggle="modal" data-bs-target="#impuestoModal" onclick=`editarImpuesto('${impuesto.nombre}')`) Editar
+                  button.btn.btn-danger.btn-sm(type="button" onclick=`borrarImpuesto('${impuesto.nombre}')`) Borrar
+        .modal.fade#impuestoModal(tabindex="-1")
+          .modal-dialog.modal-dialog-centered.modal-lg
+            .modal-content
+              .modal-header
+                h5.modal-title#impuestoModalLabel Impuesto
+                button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+              .modal-body
+                form(id="impuestoForm", method="POST")
+                  .mb-3.row
+                    .col-md-6
+                      label(for="nombre", class="form-label") Nombre
+                      input(type="text", class="form-control", id="nombre", name="nombre", placeholder="Nombre del impuesto", required)
+                    .col-md-6
+                      label(for="porcentaje", class="form-label") Porcentaje
+                      input(type="number", class="form-control", id="porcentaje", name="porcentaje", placeholder="Porcentaje del impuesto", required)
+
+              .modal-footer
+                button#guardarImpuestoBtn.btn.btn-primary(type="button" onclick="guardarImpuesto()") Guardar
+                button.btn.btn-secondary(type="button" data-bs-dismiss="modal") Cancelar
+
+    script.
+      const datos = !{JSON.stringify(datos)};
+      console.log(datos);
+
+      const editarImpuesto = (nombre) => {
+        // Lógica para cargar los datos del impuesto a editar en el modal
+        const impuesto = datos.find(imp => imp.nombre === nombre);
+        if (impuesto) {
+          document.getElementById("nombre").value = impuesto.nombre;
+          document.getElementById("porcentaje").value = impuesto.porcentaje;
+        }
+      };
+
+      const borrarImpuesto = (nombre) => {
+        // Lógica para borrar el impuesto
+        console.log(`Borrar impuesto: ${nombre}`);
+      };
+
+      const guardarImpuesto = () => {
+        // Lógica para guardar el impuesto (POST o PUT dependiendo del caso)
+        const impuesto =
+        {
+            nombre: document.getElementById("nombre").value,
+            porcentaje: parseFloat(document.getElementById("porcentaje").value)
+        }
+        console.log("Guardar impuesto");
+        console.log(impuesto);
+      };
+      let userModal = document.getElementById("impuestoModal");
+      let impuestoForm = document.getElementById("impuestoForm");
+      const modalInputs = impuestoForm.querySelectorAll("input");
+      userModal.addEventListener("hidden.bs.modal", () => {
+        modalInputs.forEach((input) => {
+          input.value = "";
+        });
+      });
