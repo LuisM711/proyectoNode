@@ -27,10 +27,15 @@ module.exports = () => {
   router.post('/guardarCambios', verification.revisarCookie, usuariosController.guardarCambios);
   router.post('/requestPrestamo', verification.revisarCookie, prestamosController.requestPrestamo);
   router.post('/auth', loginController.authenticate);
-  
+  router.post('/agregarImpuesto', verification.revisarCookie, impuestosController.agregarImpuesto);
+  router.post('/agregarUsuario', verification.revisarCookie, usuariosController.agregarUsuario);
+
   router.put('/guardarDetallesEmpleado/:idEmpleado',verification.revisarCookie, salariosController.actualizarDatos);
-  
+  router.put('/actualizarImpuesto', verification.revisarCookie, impuestosController.actualizarImpuesto);
+
+
   router.delete('/aprobacionPrestamo', verification.revisarCookie, solicitudesController.aprobacionPrestamo);
+  router.delete('/borrarImpuesto', verification.revisarCookie, impuestosController.borrarImpuesto);
 
   return router;
 };

@@ -5,16 +5,11 @@ block content
     .row.justify-content-center
       .col-md-8.text-center
         h1 Modificar impuestos y deducciones
-
-        // Botón para agregar nuevo impuesto
-        button#agregarImpuestoBtn.btn.btn-success(type="button" data-bs-toggle="modal" data-bs-target="#impuestoModal") Agregar Nuevo Impuesto
-
-        // Tabla para mostrar impuestos
         table.table.table-striped
           thead
             tr
               th Nombre
-              th Porcentaje
+              th Porcentaje (%)
               th Última Actualización
               th Acciones
           tbody
@@ -24,9 +19,9 @@ block content
                 td= impuesto.porcentaje
                 td= impuesto.ultimaActualizacion
                 td
-                  // Botones para modificar y borrar impuesto
-                  button.btn.btn-primary.btn-sm(type="button" data-bs-toggle="modal" data-bs-target="#impuestoModal" onclick=`editarImpuesto('${impuesto.nombre}')`) Editar
+                  button.editarImpuestoBtn.btn.btn-primary.btn-sm(type="button" data-bs-toggle="modal" data-bs-target="#impuestoModal" onclick=`editarImpuesto('${impuesto.nombre}')`) Editar
                   button.btn.btn-danger.btn-sm(type="button" onclick=`borrarImpuesto('${impuesto.nombre}')`) Borrar
+        button#agregarImpuestoBtn.btn.btn-success(type="button" data-bs-toggle="modal" data-bs-target="#impuestoModal") Agregar nuevo impuesto
         .modal.fade#impuestoModal(tabindex="-1")
           .modal-dialog.modal-dialog-centered.modal-lg
             .modal-content
@@ -34,47 +29,123 @@ block content
                 h5.modal-title#impuestoModalLabel Impuesto
                 button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
               .modal-body
-                form(id="impuestoForm", method="POST")
+                form(id="impuestoForm")
                   .mb-3.row
                     .col-md-6
-                      label(for="nombre", class="form-label") Nombre
-                      input(type="text", class="form-control", id="nombre", name="nombre", placeholder="Nombre del impuesto", required)
+                      label(for="nombre" class="form-label") Nombre
+                      input(type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre del impuesto", required)
                     .col-md-6
-                      label(for="porcentaje", class="form-label") Porcentaje
-                      input(type="number", class="form-control", id="porcentaje", name="porcentaje", placeholder="Porcentaje del impuesto", required)
+                      label(for="porcentaje" class="form-label") Porcentaje
+                      input(type="number" class="form-control" id="porcentaje" name="porcentaje" placeholder="Porcentaje del impuesto", required)
 
               .modal-footer
                 button#guardarImpuestoBtn.btn.btn-primary(type="button" onclick="guardarImpuesto()") Guardar
                 button.btn.btn-secondary(type="button" data-bs-dismiss="modal") Cancelar
-
+  .toast-container.position-fixed.bottom-0.end-0.p-3
+    #liveToast.toast(role="alert" aria-live="assertive" aria-atomic="true")
+      .toast-header
+        strong.me-auto Equipo 7
+        small Justo ahora
+        button.btn-close(type="button" data-bs-dismiss="toast" aria-label="Close")
+      .toast-body
+        | Ha ocurrido un error al procesar sus campos, por favor verifique que los datos sean correctos.
     script.
       const datos = !{JSON.stringify(datos)};
-      console.log(datos);
-
+      //console.log(datos);
+      function errorMsg(msg){
+        const options = {
+          animation: true,
+          autohide: true,
+          delay: 3000 
+        };
+        const toastLiveExample = document.getElementById('liveToast');
+        const toastBootstrap = new bootstrap.Toast(toastLiveExample, options);
+        toastBootstrap.show();
+      };
+      let state = null;
       const editarImpuesto = (nombre) => {
-        // Lógica para cargar los datos del impuesto a editar en el modal
+        state = "editar";
+        //console.log("Editar impuesto modal");
+        document.querySelector('#nombre').readOnly = true;
+        impuestoModalLabel.textContent = "Editar impuesto";
         const impuesto = datos.find(imp => imp.nombre === nombre);
         if (impuesto) {
           document.getElementById("nombre").value = impuesto.nombre;
           document.getElementById("porcentaje").value = impuesto.porcentaje;
         }
       };
-
       const borrarImpuesto = (nombre) => {
-        // Lógica para borrar el impuesto
-        console.log(`Borrar impuesto: ${nombre}`);
-      };
 
-      const guardarImpuesto = () => {
-        // Lógica para guardar el impuesto (POST o PUT dependiendo del caso)
-        const impuesto =
-        {
-            nombre: document.getElementById("nombre").value,
-            porcentaje: parseFloat(document.getElementById("porcentaje").value)
+        const impuesto = datos.find(imp => imp.nombre === nombre);
+        if (impuesto) {
+          fetch("/borrarImpuesto", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(impuesto)
+            })
+            .then(data => {
+              //console.log(data);
+            })
+            .catch(error => {
+              errorMsg(error);
+            }).finally(() => {
+              location.reload();
+            });
         }
-        console.log("Guardar impuesto");
-        console.log(impuesto);
       };
+      const guardarImpuesto = () => {
+        const impuesto = {
+          nombre: document.getElementById("nombre").value,
+          porcentaje: parseFloat(document.getElementById("porcentaje").value)
+        }
+        try {
+          if (impuesto.nombre === "" || impuesto.porcentaje === "" || isNaN(impuesto.porcentaje) || impuesto.porcentaje < 0 || impuesto.porcentaje > 100) {
+            throw new Error("Error en los datos");
+          }
+        //console.log(state);
+          if (state === "agregar") {
+
+            fetch("/agregarImpuesto", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify(impuesto)
+              })
+              .then(data => {
+                //console.log(data);
+              })
+              .catch(error => {
+                errorMsg(error);
+              }).finally(() => {
+                location.reload();
+              });
+          } else if (state === "editar") {
+            fetch("/actualizarImpuesto", {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify(impuesto)
+              })
+              .then(data => {
+                //console.log(data);
+              })
+              .catch(error => {
+                errorMsg(error);
+              }).finally(() => {
+                location.reload();
+              });
+          }
+
+        } catch (error) {
+          errorMsg(error);
+        }
+
+      };
+      
       let userModal = document.getElementById("impuestoModal");
       let impuestoForm = document.getElementById("impuestoForm");
       const modalInputs = impuestoForm.querySelectorAll("input");
@@ -82,4 +153,14 @@ block content
         modalInputs.forEach((input) => {
           input.value = "";
         });
+      });
+      agregarImpuestoBtn.addEventListener("click", () => {
+        state = "agregar";
+        //console.log("Agregar impuesto modal");
+        modalInputs.forEach((input) => {
+          input.value = "";
+        });
+        document.querySelector('#nombre').readOnly = false;
+        impuestoModalLabel.textContent = "Agregar impuesto";
+
       });

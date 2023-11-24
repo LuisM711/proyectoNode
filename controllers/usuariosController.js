@@ -20,7 +20,7 @@ module.exports.usuarios = (req, res) => {
     else {
         //res.render('principal', { error: 'No tienes permisos'});
         res.render('principal', {
-            datos:{
+            datos: {
                 error: 'No tienes permisos',
                 ...userData
             }
@@ -28,7 +28,27 @@ module.exports.usuarios = (req, res) => {
     }
 };
 
-
+module.exports.agregarUsuario = (req, res) => {
+    const userData = verification.getUserData(req, res);
+    if (userData.rango === 1) {
+        EmpleadoModel.agregarEmpleado(req.db, req.body, (err) => {
+            if (err) {
+                res.status(500).send('Error en la consulta de empleados');
+                return;
+            }
+            res.redirect("/usuarios");
+        });
+    }
+    else {
+        //res.render('principal', { error: 'No tienes permisos'});
+        res.render('principal', {
+            datos: {
+                error: 'No tienes permisos',
+                ...userData
+            }
+        });
+    }
+}
 module.exports.guardarCambios = (req, res) => {
     const userData = verification.getUserData(req, res);
     EmpleadoModel.actualizarEmpleado(req.db, req.body, (err) => {
@@ -36,6 +56,8 @@ module.exports.guardarCambios = (req, res) => {
             res.redirect("/usuarios");
         } else {
             if (userData.id == req.body.idEmpleado) {
+                const cookieName = 'jwt';
+                res.clearCookie(cookieName);
                 res.render('login', { error: "El usuario ha sido actualizado, por favor inicia sesión de nuevo" });
             }
             else res.redirect("/usuarios");

@@ -16,7 +16,6 @@ block content
                 th Activo
             tbody
               each empleado in empleadosData
-                //tr(class=empleado.Alta ? 'table-success' : 'table-danger', data-bs-toggle="modal" data-bs-target="#updateUserModal" data-idemp="#{empleado.IDEmp}" data-username="#{empleado.Usuario}" data-cargo="#{empleado.Rango}" data-alta="#{empleado.Alta ? 'Si' : 'No'}" data-direccion="#{empleado.Direccion}" data-celular="#{empleado.Celular}" data-rfc="#{empleado.RFC}" data-nss="#{empleado.NSS}" data-curp="#{empleado.CURP}")
                 tr(class=empleado.Alta ? 'table-success' : 'table-danger')
                   td= empleado.IDEmp
                   td= empleado.Usuario
@@ -144,7 +143,7 @@ block content
                     .col-md-3
                       .form-check
                         input(type="checkbox", class="form-check-input", id="add_active", name="isActive")
-                        label.form-check-label(for="active") Activo
+                        label.form-check-label(for="add_active") Activo
 
                   .mb-3.row
                     .col-md-12

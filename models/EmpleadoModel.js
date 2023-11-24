@@ -1,4 +1,23 @@
 class EmpleadoModel {
+    static agregarEmpleado(db, datos, callback) {
+        console.log(datos);
+        const isActive = datos.isActive === '' ? 'on' : datos.isActive;
+        console.log(isActive);
+        const sql = `INSERT INTO empleados (Nombre, ApellidoPaterno, ApellidoMaterno, Usuario, Contra, Cargo, Alta, Direccion, Celular, RFC, NSS, CURP, SueldoMensual) VALUES
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        const values = [datos.nombreEmpleado, datos.apellidoPaterno, datos.apellidoMaterno, datos.username, datos.password, datos.role, isActive === "on" ? true : false , datos.direccion, datos.celular, datos.RFC, datos.NSS, datos.CURP, datos.sueldo];
+        db.query(sql, values, (err, results) => {
+            if (err) {
+                console.error('Error al guardar cambios en la base de datos: ' + err.message);
+                callback(err);
+            } else {
+                //console.log('Cambios guardados en la base de datos');
+                callback(null);
+            }
+        });
+
+
+    }
     static actualizarSueldoDeducciones(db, idEmp, sueldo, detalles, callback) {
         let sql = `UPDATE empleados SET SueldoMensual = ? WHERE IDEmp = ?;`;
 
@@ -160,9 +179,9 @@ class EmpleadoModel {
         });
     }
     static actualizarEmpleado(db, datos, callback) {
-        //console.log(datos);
+        console.log(datos);
         const sql = "UPDATE empleados SET Nombre = ?, ApellidoPaterno = ?, ApellidoMaterno = ?, Usuario = ?, Contra = ?, Cargo = ?, Alta = ?, Direccion = ?, Celular = ?, RFC = ?, NSS = ?, CURP = ?, SueldoMensual = ? WHERE IDEmp = ?";
-        const values = [datos.nombreEmpleado, datos.apellidoPaterno, datos.apellidoMaterno, datos.username, datos.password, datos.role, datos.isActive === "on", datos.direccion, datos.celular, datos.RFC, datos.NSS, datos.CURP, datos.sueldo, datos.idEmpleado];
+        const values = [datos.nombreEmpleado, datos.apellidoPaterno, datos.apellidoMaterno, datos.username, datos.password, datos.role, datos.isActive === "on" ? true : false , datos.direccion, datos.celular, datos.RFC, datos.NSS, datos.CURP, datos.sueldo, datos.idEmpleado];
         db.query(sql, values, (err, results) => {
             if (err) {
                 console.error('Error al guardar cambios en la base de datos: ' + err.message);
