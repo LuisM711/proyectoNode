@@ -33,7 +33,7 @@ app.use(express.static('public'));
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, './views'));
 app.use('/', routes());
-
+app.disable('x-powered-by');
 app.listen(process.env.PORT, () => {
   console.log(`Servidor escuchando en el puerto ${process.env.PORT}`);
 });

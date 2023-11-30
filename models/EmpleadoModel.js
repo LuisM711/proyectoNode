@@ -206,70 +206,86 @@ class EmpleadoModel {
             });
         });
     }
+    static async getNominaCalculada(db, callback) {
+        let arr = [];
+        const impuestos = await this.getImpuestos(db);
+        const getDatos = 'SELECT idEmp, Nombre, ApellidoPaterno, ApellidoMaterno, SueldoMensual FROM empleados';
 
-    static async getNominaCalculada(db, empId, callback) {
-        let impuestos = await this.getImpuestos(db);
-        let sueldoNeto = 0;
-        const sueldoQuery = `SELECT SueldoMensual FROM empleados WHERE IDEmp = ${empId}`;
-        db.query(sueldoQuery, (err, sueldoResult) => {
+        db.query(getDatos, (err, resultados) => {
             if (err) {
                 return callback(err, null);
             }
 
-            if (sueldoResult.length === 0) {
+            if (resultados.length === 0) {
                 return callback(new Error('Empleado no encontrado'), null);
             }
-            const sueldoBruto = sueldoResult[0].SueldoMensual;
-            const descuentosQuery = `SELECT Monto, Descripcion FROM descuentos WHERE IDEmp = ${empId}`;
-            db.query(descuentosQuery, (err, descuentosResult) => {
-                if (err) {
-                    return callback(err, null);
-                }
-                let sumaDeImpuestos = impuestos.reduce((acc, impuesto) => acc + impuesto.porcentaje, 0);
-                const totalRetenciones = (sumaDeImpuestos) * sueldoBruto / 100;
-                const deudaTotal = descuentosResult.reduce((acc, descuento) => acc + descuento.Monto, 0);
-                let remanente = (sueldoBruto - totalRetenciones) - sueldoBruto * .5;
-                //remanente = 1000000;
-                console.log(sueldoBruto, remanente, totalRetenciones, deudaTotal);
-                let abonoTotal = 0;
-                while (remanente > 0 && abonoTotal < deudaTotal) {
-                    let abono = deudaTotal - abonoTotal < remanente ? deudaTotal - abonoTotal : remanente;
-                    remanente -= abono;
-                    abonoTotal += abono;
-                }
-                console.log(abonoTotal);
-                console.log(descuentosResult);
-                console.log("proceso");
-                const porPagar = abonoTotal;
-                let descuentosActualizados = [];
-                descuentosResult.forEach(descuento => {
-                    console.log("monto" + descuento.Monto);
-                    if (abonoTotal > 0) {
-                        if (descuento.Monto <= abonoTotal) {
-                            abonoTotal = abonoTotal - Number(descuento.Monto);
-                            descuento.Monto = 0;
-                        } else {
-                            descuento.Monto -= abonoTotal;
-                            abonoTotal = 0;
-                        }
-                        if (descuento.Monto > 0) { descuentosActualizados.push(descuento); }
 
-                    }
-                    else if (abonoTotal === 0)
-                        descuentosActualizados.push(descuento);
+            const promises = resultados.map(async (element) => {
+                let empId = element.idEmp;
+                let sueldoBruto = element.SueldoMensual;
+                let descuentosQuery = `SELECT Monto, Descripcion FROM descuentos WHERE IDEmp = ${empId} order by Descripcion ASC;`;
+
+                return new Promise((resolve, reject) => {
+                    db.query(descuentosQuery, (err, descuentosResult) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            let sumaDeImpuestos = impuestos.reduce((acc, impuesto) => acc + impuesto.porcentaje, 0);
+                            let totalRetenciones = (sumaDeImpuestos) * sueldoBruto / 100;
+                            let deudaTotal = descuentosResult.reduce((acc, descuento) => acc + descuento.Monto, 0);
+                            let remanente = (sueldoBruto - totalRetenciones) - sueldoBruto * .5;
+
+                            let abonoTotal = 0;
+                            while (remanente > 0 && abonoTotal < deudaTotal) {
+                                let abono = deudaTotal - abonoTotal < remanente ? deudaTotal - abonoTotal : remanente;
+                                remanente -= abono;
+                                abonoTotal += abono;
+                            }
+
+                            let porPagar = abonoTotal;
+                            let descuentosActualizados = [];
+                            descuentosResult.forEach(descuento => {
+                                if (abonoTotal > 0) {
+                                    if (descuento.Monto <= abonoTotal) {
+                                        abonoTotal = abonoTotal - Number(descuento.Monto);
+                                        descuento.Monto = 0;
+                                    } else {
+                                        descuento.Monto -= abonoTotal;
+                                        abonoTotal = 0;
+                                    }
+                                    if (descuento.Monto > 0) { descuentosActualizados.push(descuento); }
+                                } else if (abonoTotal === 0) {
+                                    descuentosActualizados.push(descuento);
+                                }
+                            });
+
+                            let sueldoNeto = sueldoBruto - totalRetenciones - porPagar;
+
+                            const objeto = {
+                                idEmp: empId,
+                                sueldoBruto: sueldoBruto,
+                                impuestos: impuestos,
+                                totalRetenciones: totalRetenciones,
+                                abonado: porPagar,
+                                descuentos: descuentosActualizados,
+                                deudaTotal: deudaTotal,
+                                sueldoNeto: sueldoNeto,
+                            };
+
+                            resolve(objeto);
+                        }
+                    });
                 });
-                console.log(descuentosActualizados);
-                sueldoNeto = sueldoBruto - totalRetenciones - porPagar;
-                console.log("sueldo neto: " + sueldoNeto);
-                this.actualizarSueldoDeducciones(db, empId, sueldoBruto, descuentosActualizados, (err, res) => {
-                    if (err) {
-                        return callback(err, null);
-                    }
-                    else {
-                        return callback(null, sueldoNeto);
-                    }
-                })
             });
+
+            Promise.all(promises)
+                .then((results) => {
+                    arr = results;
+                    callback(null, arr);
+                })
+                .catch((err) => {
+                    callback(err, null);
+                });
         });
     }
 }

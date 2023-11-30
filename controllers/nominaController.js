@@ -10,14 +10,12 @@ module.exports.calculoDeNomina = (req, res) => {
     //     nombre: "Nombre",
     //     sueldoFinal: 10000
     // }
-    EmpleadoModel.getNominaCalculada(req.db, 1, (err, results) => {
+    EmpleadoModel.getNominaCalculada(req.db, (err, results) => {
         if (err) {
             res.status(500).send('Error en la consulta de nomina');
             return;
         }
-        //console.log(empleadosData);
-        //console.log(empleadosDataDetalle);
-        res.json(results);
+        else res.json(results);
     });
 
 }
