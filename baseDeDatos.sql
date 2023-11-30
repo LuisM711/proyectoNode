@@ -28,11 +28,15 @@ CREATE TABLE `cargos` (
 
 /*Data for the table `cargos` */
 
+LOCK TABLES `cargos` WRITE;
+
 insert  into `cargos`(`IDCargos`,`Cargos`) values 
 (1,'Administrador'),
 (2,'Director'),
 (3,'Recursos Humanos'),
 (4,'Empleado');
+
+UNLOCK TABLES;
 
 /*Table structure for table `descuentos` */
 
@@ -46,12 +50,9 @@ CREATE TABLE `descuentos` (
 
 /*Data for the table `descuentos` */
 
-insert  into `descuentos`(`IDEmp`,`Monto`,`Descripcion`) values 
-(3,546546,'dfgfd'),
-(2,100000,'inversion largo plazo'),
-(1,200000,'carro nuevo de agencia 2028'),
-(3,354534,'fdg'),
-(3,324,'gdfg');
+LOCK TABLES `descuentos` WRITE;
+
+UNLOCK TABLES;
 
 /*Table structure for table `empleados` */
 
@@ -77,11 +78,15 @@ CREATE TABLE `empleados` (
 
 /*Data for the table `empleados` */
 
+LOCK TABLES `empleados` WRITE;
+
 insert  into `empleados`(`IDEmp`,`Nombre`,`ApellidoPaterno`,`ApellidoMaterno`,`Usuario`,`Contra`,`Alta`,`Direccion`,`Celular`,`Cargo`,`RFC`,`NSS`,`CURP`,`SueldoMensual`) values 
-(1,'Luis Mario','Lopez','Reyes','luis74','1234',1,'Bosque de Olmos #1871','6682212485',1,'LORL031220DV7','39239','LORL031220HSLPYSA9',1002),
-(2,'Ramon','Ruiz','Castro','ramon','12',1,'Mansion','6668882234',4,'3920320','9430340w','90ds90',20000),
+(1,'Luis Mario','Lopez','Reyes','luis74','1234',1,'Bosque de Olmos #1871','6682212485',1,'LORL031220DV7','39239','LORL031220HSLPYSA9',10000),
+(2,'Ramon','Ruiz','Castro','ramon','12',1,'Mansion','6668882234',1,'3920320','9430340w','90ds90',20000),
 (3,'Ana Gabriela','Zepeda','Ramirez','puppy92','1245',1,'Delicias','6683512874',1,'39394309','49340349','0s90fd90',30000),
-(4,'Andrik','Gomez','Valdez','kirna09','0912',1,'Puente','6683273265',3,'2093290','3289398320','45654',4001);
+(4,'Andrik','Gomez','Valdez','kirna09','0912',1,'Puente','6683273265',3,'2093290','3289398320','45654',40000);
+
+UNLOCK TABLES;
 
 /*Table structure for table `impuestos` */
 
@@ -96,9 +101,13 @@ CREATE TABLE `impuestos` (
 
 /*Data for the table `impuestos` */
 
+LOCK TABLES `impuestos` WRITE;
+
 insert  into `impuestos`(`nombre`,`porcentaje`,`ultimaActualizacion`) values 
-('ISR',16,'2023-11-23'),
-('IVA',11,'2023-11-23');
+('ISR',10,'2023-11-29'),
+('IVA',16,'2023-11-23');
+
+UNLOCK TABLES;
 
 /*Table structure for table `peticionesprestamos` */
 
@@ -112,12 +121,16 @@ CREATE TABLE `peticionesprestamos` (
 
 /*Data for the table `peticionesprestamos` */
 
+LOCK TABLES `peticionesprestamos` WRITE;
+
+UNLOCK TABLES;
+
 /* Function  structure for function  `getDeudaTotal` */
 
 /*!50003 DROP FUNCTION IF EXISTS `getDeudaTotal` */;
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` FUNCTION `getDeudaTotal`(ID int) RETURNS decimal(10,0)
+/*!50003 CREATE FUNCTION `getDeudaTotal`(ID int) RETURNS decimal(10,0)
     DETERMINISTIC
 begin
 	declare deudaTotal decimal;
@@ -135,9 +148,11 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `getDeudaTotalDetalle`(IN ID INT)
+/*!50003 CREATE PROCEDURE `getDeudaTotalDetalle`(IN ID INT)
 BEGIN
-    SELECT MONTO, DESCRIPCION FROM descuentos WHERE IDEMP = ID order by MONTO asc;
+    SELECT IDEmp, Monto, Descripcion
+    FROM descuentos
+    WHERE IDEmp = ID;
 END */$$
 DELIMITER ;
 
@@ -158,7 +173,7 @@ DROP TABLE IF EXISTS `descuentosview`;
 /*!50001 DROP TABLE IF EXISTS `descuentosview` */;
 /*!50001 DROP VIEW IF EXISTS `descuentosview` */;
 
-/*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `descuentosview` AS select `descuentos`.`IDEmp` AS `IDEMP`,sum(`descuentos`.`Monto`) AS `DEUDA` from `descuentos` group by `descuentos`.`IDEmp` */;
+/*!50001 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `descuentosview` AS select `descuentos`.`IDEmp` AS `IDEMP`,sum(`descuentos`.`Monto`) AS `DEUDA` from `descuentos` group by `descuentos`.`IDEmp` */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

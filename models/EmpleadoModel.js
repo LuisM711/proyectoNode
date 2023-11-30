@@ -5,7 +5,7 @@ class EmpleadoModel {
         console.log(isActive);
         const sql = `INSERT INTO empleados (Nombre, ApellidoPaterno, ApellidoMaterno, Usuario, Contra, Cargo, Alta, Direccion, Celular, RFC, NSS, CURP, SueldoMensual) VALUES
         (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-        const values = [datos.nombreEmpleado, datos.apellidoPaterno, datos.apellidoMaterno, datos.username, datos.password, datos.role, isActive === "on" ? true : false , datos.direccion, datos.celular, datos.RFC, datos.NSS, datos.CURP, datos.sueldo];
+        const values = [datos.nombreEmpleado, datos.apellidoPaterno, datos.apellidoMaterno, datos.username, datos.password, datos.role, isActive === "on" ? true : false, datos.direccion, datos.celular, datos.RFC, datos.NSS, datos.CURP, datos.sueldo];
         db.query(sql, values, (err, results) => {
             if (err) {
                 console.error('Error al guardar cambios en la base de datos: ' + err.message);
@@ -20,7 +20,7 @@ class EmpleadoModel {
     }
     static actualizarSueldoDeducciones(db, idEmp, sueldo, detalles, callback) {
         let sql = `UPDATE empleados SET SueldoMensual = ? WHERE IDEmp = ?;`;
-
+        //console.log(detalles);
         db.query(sql, [sueldo, idEmp], (err, results) => {
             if (err) {
                 console.error('Error en la consulta: ' + err.message);
@@ -38,7 +38,7 @@ class EmpleadoModel {
                         if (detalles.length > 0) {
                             const insertPromises = detalles.map(element => {
                                 sql = "INSERT INTO descuentos (IDEmp, Monto, Descripcion) VALUES (?, ?, ?);";
-                                return db.query(sql, [idEmp, element.MONTO, element.DESCRIPCION]);
+                                return db.query(sql, [idEmp, element.Monto, element.Descripcion]);
                             });
 
                             Promise.all(insertPromises)
@@ -161,6 +161,7 @@ class EmpleadoModel {
                 console.error('Error en la consulta: ' + err.message);
                 callback(err, null, null);
             } else {
+                //console.log(results[0]);
                 callback(null, results[0]);
             }
         });
@@ -181,7 +182,7 @@ class EmpleadoModel {
     static actualizarEmpleado(db, datos, callback) {
         console.log(datos);
         const sql = "UPDATE empleados SET Nombre = ?, ApellidoPaterno = ?, ApellidoMaterno = ?, Usuario = ?, Contra = ?, Cargo = ?, Alta = ?, Direccion = ?, Celular = ?, RFC = ?, NSS = ?, CURP = ?, SueldoMensual = ? WHERE IDEmp = ?";
-        const values = [datos.nombreEmpleado, datos.apellidoPaterno, datos.apellidoMaterno, datos.username, datos.password, datos.role, datos.isActive === "on" ? true : false , datos.direccion, datos.celular, datos.RFC, datos.NSS, datos.CURP, datos.sueldo, datos.idEmpleado];
+        const values = [datos.nombreEmpleado, datos.apellidoPaterno, datos.apellidoMaterno, datos.username, datos.password, datos.role, datos.isActive === "on" ? true : false, datos.direccion, datos.celular, datos.RFC, datos.NSS, datos.CURP, datos.sueldo, datos.idEmpleado];
         db.query(sql, values, (err, results) => {
             if (err) {
                 console.error('Error al guardar cambios en la base de datos: ' + err.message);
@@ -190,6 +191,85 @@ class EmpleadoModel {
                 //console.log('Cambios guardados en la base de datos');
                 callback(null);
             }
+        });
+    }
+    static getImpuestos(db) {
+        return new Promise((resolve, reject) => {
+            const sqlQuery = 'SELECT nombre, porcentaje FROM impuestos';
+            db.query(sqlQuery, (err, results) => {
+                if (err) {
+                    console.error('Error en la consulta: ' + err.message);
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    }
+
+    static async getNominaCalculada(db, empId, callback) {
+        let impuestos = await this.getImpuestos(db);
+        let sueldoNeto = 0;
+        const sueldoQuery = `SELECT SueldoMensual FROM empleados WHERE IDEmp = ${empId}`;
+        db.query(sueldoQuery, (err, sueldoResult) => {
+            if (err) {
+                return callback(err, null);
+            }
+
+            if (sueldoResult.length === 0) {
+                return callback(new Error('Empleado no encontrado'), null);
+            }
+            const sueldoBruto = sueldoResult[0].SueldoMensual;
+            const descuentosQuery = `SELECT Monto, Descripcion FROM descuentos WHERE IDEmp = ${empId}`;
+            db.query(descuentosQuery, (err, descuentosResult) => {
+                if (err) {
+                    return callback(err, null);
+                }
+                let sumaDeImpuestos = impuestos.reduce((acc, impuesto) => acc + impuesto.porcentaje, 0);
+                const totalRetenciones = (sumaDeImpuestos) * sueldoBruto / 100;
+                const deudaTotal = descuentosResult.reduce((acc, descuento) => acc + descuento.Monto, 0);
+                let remanente = (sueldoBruto - totalRetenciones) - sueldoBruto * .5;
+                //remanente = 1000000;
+                console.log(sueldoBruto, remanente, totalRetenciones, deudaTotal);
+                let abonoTotal = 0;
+                while (remanente > 0 && abonoTotal < deudaTotal) {
+                    let abono = deudaTotal - abonoTotal < remanente ? deudaTotal - abonoTotal : remanente;
+                    remanente -= abono;
+                    abonoTotal += abono;
+                }
+                console.log(abonoTotal);
+                console.log(descuentosResult);
+                console.log("proceso");
+                const porPagar = abonoTotal;
+                let descuentosActualizados = [];
+                descuentosResult.forEach(descuento => {
+                    console.log("monto" + descuento.Monto);
+                    if (abonoTotal > 0) {
+                        if (descuento.Monto <= abonoTotal) {
+                            abonoTotal = abonoTotal - Number(descuento.Monto);
+                            descuento.Monto = 0;
+                        } else {
+                            descuento.Monto -= abonoTotal;
+                            abonoTotal = 0;
+                        }
+                        if (descuento.Monto > 0) { descuentosActualizados.push(descuento); }
+
+                    }
+                    else if (abonoTotal === 0)
+                        descuentosActualizados.push(descuento);
+                });
+                console.log(descuentosActualizados);
+                sueldoNeto = sueldoBruto - totalRetenciones - porPagar;
+                console.log("sueldo neto: " + sueldoNeto);
+                this.actualizarSueldoDeducciones(db, empId, sueldoBruto, descuentosActualizados, (err, res) => {
+                    if (err) {
+                        return callback(err, null);
+                    }
+                    else {
+                        return callback(null, sueldoNeto);
+                    }
+                })
+            });
         });
     }
 }

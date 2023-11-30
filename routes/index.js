@@ -22,7 +22,8 @@ module.exports = () => {
   router.get('/detallesDeducciones/:idEmpleado',verification.revisarCookie,salariosController.salariosDetalle);
   router.get('/empleados/:idEmpleado', verification.revisarCookie, usuariosController.getEmpleadoById);
   router.get('/logout', loginController.logout);
-  
+  router.get('/calculoDeNomina', verification.revisarCookie, nominaController.calculoDeNomina);
+
 
   router.post('/guardarCambios', verification.revisarCookie, usuariosController.guardarCambios);
   router.post('/requestPrestamo', verification.revisarCookie, prestamosController.requestPrestamo);

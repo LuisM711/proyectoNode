@@ -62,8 +62,7 @@ block content
       fetch(`/detallesDeducciones/${ID}`)
         .then(response => response.json())
         .then(detalles => {
-          //console.log(detalles);
-
+          console.log(detalles);
           // Construir el formulario dinámicamente con los datos recibidos
           const detallesContent = document.getElementById(`detallesContent-${ID}`);
           detallesContent.innerHTML = "";
@@ -71,9 +70,9 @@ block content
             detallesContent.innerHTML += `
               <div>
                 <label for="monto-${index}">Monto:</label>
-                <input type="number" id="monto-${index}" name="monto-${index}" value="${detalle.MONTO}" required>
+                <input type="number" id="monto-${index}" name="monto-${index}" value="${detalle.Monto}" required>
                 <label for="descripcion-${index}">Descripción:</label>
-                <input type="text" id="descripcion-${index}" name="descripcion-${index}" value="${detalle.DESCRIPCION}" required>
+                <input type="text" id="descripcion-${index}" name="descripcion-${index}" value="${detalle.Descripcion}" required>
                 <button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(${ID}, ${index})">Eliminar</button>
               </div>
             `;
@@ -140,11 +139,11 @@ block content
           return;
         }
 
-        detalles.push({ MONTO: monto, DESCRIPCION: descripcion });
+        detalles.push({ Monto: monto, Descripcion: descripcion });
       });
       if (flag) return;
       const cuerpo = JSON.stringify({ sueldoMensual, detalles });
-      //console.log(cuerpo);
+      //console.log(JSON.parse(cuerpo));
 
       // Realizar la petición al backend para guardar los detalles
       fetch(`/guardarDetallesEmpleado/${ID}`, {

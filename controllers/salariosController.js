@@ -23,7 +23,7 @@ module.exports.salariosDetalle = (req, res) => {
             return;
         }
         //console.log(empleadosData);
-        //console.log(cargosData);
+        //console.log(empleadosDataDetalle);
         res.json(empleadosDataDetalle);
     });
 }
