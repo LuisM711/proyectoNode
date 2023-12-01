@@ -271,7 +271,14 @@ class EmpleadoModel {
                                 deudaTotal: deudaTotal,
                                 sueldoNeto: sueldoNeto,
                             };
-
+                            //actualizarSueldoDeducciones(db, idEmp, sueldo, detalles, callback)
+                            this.actualizarSueldoDeducciones(db,empId, sueldoBruto, descuentosActualizados, (error,results)=>{
+                                if(error)
+                                {
+                                    reject(error);
+                                }
+                            })
+                            
                             resolve(objeto);
                         }
                     });
