@@ -1,14 +1,28 @@
 const ImpuestosModel = require('../models/ImpuestosModel');
+const verification = require("../middlewares/verification");
+
 module.exports.impuestos = (req, res) => {
-    ImpuestosModel.getImpuestos(req.db, (err, results) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        res.render('impuestos', {
-            datos: results
+    const userData = verification.getUserData(req, res);
+    if (userData.rango === 1) {
+        ImpuestosModel.getImpuestos(req.db, (err, results) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            res.render('impuestos', {
+                datos: results
+            });
         });
-    });
+    }
+    else {
+        res.render('principal', {
+            datos: {
+                error: 'No tienes permisos',
+                ...userData
+            }
+        });
+    }
+    
 };
 module.exports.actualizarImpuesto = (req, res) => {
     const nombre = req.body.nombre;

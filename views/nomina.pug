@@ -1,54 +1,37 @@
 extends layout
 block content
-    .container.mt-5
-      .row
-        .col
-          h1.display-4 Consulta de Nómina
-          table.table.table-striped.table-hover
-            thead
-              tr
-                th ID del empleado
-                th Nombre
-                th Deducciones
-                th Percepciones
-            tbody
-              tr(data-bs-toggle="modal" data-bs-target="#detailsModal")
-                td 001
-                td Empleado1
-                td $100.00
-                td $1000.00
-              tr(data-bs-toggle="modal" data-bs-target="#detailsModal")
-                td 002
-                td Empleado2
-                td $50.00
-                td $1200.00
-              // Agrega más filas de datos aquí
-    // Modal para mostrar deducciones y percepciones detalladas
-    .modal.fade#detailsModal(tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true")
-      .modal-dialog
-        .modal-content
-          .modal-header
-            h5.modal-title Detalles de Nómina
-            button.btn-close(data-bs-dismiss="modal" aria-label="Cerrar")
-          .modal-body
-            table.table.table-bordered
-              thead
-                tr
-                  th Concepto
-                  th Monto
-              tbody
-                tr
-                  td Deducción 1
-                  td $50.00
-                tr
-                  td Deducción 2
-                  td $50.00
-                tr
-                  td Percepción 1
-                  td $600.00
-                tr
-                  td Percepción 2
-                  td $600.00
-              // Agrega más filas de detalles aquí
-          .modal-footer
-            button.btn.btn-secondary(data-bs-dismiss="modal") Cerrar
+  .container.mt-5
+    if nominas.length > 0
+      h1 Bienvenido al sistema de nómina
+      table.table.table-bordered.table-hover
+        thead
+          tr
+            th Fecha de Nómina
+            th Acciones
+        tbody
+          each nomina in nominas
+            tr
+              td= nomina.fecha
+              td
+                button.btn.btn-primary.m-1(type="button", onclick=`consultarNomina('${nomina.nombre}')`) Ver documento
+          #pdfModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="pdfModalLabel", aria-hidden="true")
+            .modal-dialog.modal-lg(role="document")
+              .modal-content
+                .modal-header
+                  h5#pdfModalLabel.modal-title Nómina
+                  button.btn-close(data-bs-dismiss="modal" aria-label="Close" type="button")
+                .modal-body
+                  iframe#pdfIframe(width="100%", height="600px", frameborder="0")
+                .modal-footer
+                  button.btn.btn-secondary(type="button", data-bs-dismiss="modal") Cerrar
+    else
+      h1.text-center No hay historial de nómina para ese empleado
+  script.
+    const id = !{JSON.stringify(id)};
+    function consultarNomina(nomina) {
+      const pdfIframe = document.getElementById('pdfIframe');
+      pdfIframe.src = `/pdf/nomina/${id}/${nomina}`;
+
+      const modal = new bootstrap.Modal(document.getElementById('pdfModal'));
+      modal.show();
+    }

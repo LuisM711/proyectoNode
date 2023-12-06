@@ -36,11 +36,11 @@ html(lang="es")
             li.nav-item
               a.nav-link(href="/solicitudes") Ver solicitudes de prestamos
             li.nav-item
-              a.nav-link(href="/") Ver historial de nómina
-            li.nav-item
               a.nav-link(href="/impuestos") Modificar impuestos y deducciones 
             li.nav-item
               a.nav-link(href="/documentosimportantes") Acceso a documentos importantes
+            li.nav-item
+              button.nav-link(onclick="generarNomina()") Generar nómina 
             li.nav-item
               a.nav-link(href="#" onclick="abrirModalCerrarSesion()") Cerrar sesión
     script.
@@ -51,6 +51,21 @@ html(lang="es")
 
       function sinPermisos() {
         alert("No tienes permisos para acceder a esta sección");
+      }
+      function generarNomina()
+      {
+        fetch("/calculoDeNomina", {
+            method: "GET",
+            })
+            .then(response => response.json())
+            .then(data => {
+              alert(data.message);
+            })
+            .catch(error => {
+              errorMsg(error);
+            }).finally(() => {
+              location.reload();
+            });
       }
 
   block content

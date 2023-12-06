@@ -1,18 +1,29 @@
 const EmpleadoModel = require('../models/EmpleadoModel');
+const verification = require("../middlewares/verification");
 
 module.exports.salarios = (req, res) => {
-    EmpleadoModel.getSalarios(req.db, (err, empleadosData) => {
-        if (err) {
-            res.status(500).send('Error en la consulta de empleados');
-            return;
-        }
-        //console.log(empleadosData);
-        //console.log(cargosData);
-        res.render('salarios', {
-            userData: req.app.locals.userData,
-            empleadosData
+    const userData = verification.getUserData(req, res);
+    if (userData.rango === 1) {
+
+        EmpleadoModel.getSalarios(req.db, (err, empleadosData) => {
+            if (err) {
+                res.status(500).send('Error en la consulta de empleados');
+                return;
+            }
+            res.render('salarios', {
+                userData: req.app.locals.userData,
+                empleadosData
+            });
         });
-    });
+    }
+    else {
+        res.render('principal', {
+            datos: {
+                error: 'No tienes permisos',
+                ...userData
+            }
+        });
+    }
 }
 module.exports.salariosDetalle = (req, res) => {
     const idEmpleado = req.params.idEmpleado;
@@ -32,13 +43,13 @@ module.exports.actualizarDatos = (req, res) => {
     const idEmpleado = req.params.idEmpleado;
     //console.log(req.body);
     // res.json(req.body);
-        EmpleadoModel.actualizarSueldoDeducciones(req.db, idEmpleado,req.body.sueldoMensual,req.body.detalles, (err, empleadosDataDetalle) => {
-            if (err) {
-                res.status(500).json({ message: 'Error en la actualización'});
-            }
-            else{
-                res.status(200).json({ message: 'Actualización exitosa' });
-            }
-        });
+    EmpleadoModel.actualizarSueldoDeducciones(req.db, idEmpleado, req.body.sueldoMensual, req.body.detalles, (err, empleadosDataDetalle) => {
+        if (err) {
+            res.status(500).json({ message: 'Error en la actualización' });
+        }
+        else {
+            res.status(200).json({ message: 'Actualización exitosa' });
+        }
+    });
 
 }

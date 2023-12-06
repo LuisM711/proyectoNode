@@ -15,7 +15,8 @@ module.exports.prestamos = (req, res) => {
                 }
             })
         }
-        const sumatoria = results.reduce((total, row) => total + row.MONTO, 0);
+        const sumatoria = results.reduce((total, row) => total + row.Monto, 0);
+        console.log(results);
         res.render('prestamos',
             {
                 datos: {

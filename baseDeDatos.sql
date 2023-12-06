@@ -81,10 +81,10 @@ CREATE TABLE `empleados` (
 LOCK TABLES `empleados` WRITE;
 
 insert  into `empleados`(`IDEmp`,`Nombre`,`ApellidoPaterno`,`ApellidoMaterno`,`Usuario`,`Contra`,`Alta`,`Direccion`,`Celular`,`Cargo`,`RFC`,`NSS`,`CURP`,`SueldoMensual`) values 
-(1,'Luis Mario','Lopez','Reyes','luis74','1234',1,'Bosque de Olmos #1871','6682212485',1,'LORL031220DV7','39239','LORL031220HSLPYSA9',10000),
-(2,'Ramon','Ruiz','Castro','ramon','12',1,'Mansion','6668882234',1,'3920320','9430340w','90ds90',20000),
-(3,'Ana Gabriela','Zepeda','Ramirez','puppy92','1245',1,'Delicias','6683512874',1,'39394309','49340349','0s90fd90',30000),
-(4,'Andrik','Gomez','Valdez','kirna09','0912',1,'Puente','6683273265',3,'2093290','3289398320','45654',40000);
+(1,'Luis Mario','Lopez','Reyes','luis','1234',1,'Bosque de Olmos #1871','6682212485',1,'LORL031220DV7','39239','LORL031220HSLPYSA9',10000),
+(2,'Ramon','Ruiz','Castro','ramon','4321',1,'Mansion','6668882234',2,'3920320','9430340w','90ds90',20000),
+(3,'Ana Gabriela','Zepeda','Ramirez','gabriela','1111',1,'Delicias','6683512874',1,'39394309','49340349','0s90fd90',30000),
+(4,'Andrik','Gomez','Valdez','andrik','2222',1,'Puente','6683273265',3,'2093290','3289398320','45654',40000);
 
 UNLOCK TABLES;
 
@@ -104,8 +104,8 @@ CREATE TABLE `impuestos` (
 LOCK TABLES `impuestos` WRITE;
 
 insert  into `impuestos`(`nombre`,`porcentaje`,`ultimaActualizacion`) values 
-('ISR',10,'2023-11-29'),
-('IVA',16,'2023-11-23');
+('ISR',20,'2023-11-30'),
+('IVA',16,'2023-12-06');
 
 UNLOCK TABLES;
 
