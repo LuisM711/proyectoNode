@@ -13,16 +13,16 @@ const verification = require("../middlewares/verification");
 module.exports = () => {
   router.get('/', loginController.login);
   router.get('/documentosimportantes', documentosimportantesController.documentosimportantes);
-  router.get('/usuarios', verification.revisarCookie, usuariosController.usuarios);
-  router.get('/solicitudes', verification.revisarCookie, solicitudesController.solicitudes);
+  router.get('/usuarios', verification.revisarCookie, verification.revisarCookiePermisos, usuariosController.usuarios);
+  router.get('/solicitudes', verification.revisarCookie,verification.revisarCookiePermisos, solicitudesController.solicitudes);
   router.get('/nomina', verification.revisarCookie, nominaController.nomina);
   router.get('/prestamos', verification.revisarCookie, prestamosController.prestamos);
-  router.get('/impuestos', verification.revisarCookie, impuestosController.impuestos);
-  router.get('/salarios', verification.revisarCookie, salariosController.salarios);
+  router.get('/impuestos', verification.revisarCookie,verification.revisarCookiePermisos, impuestosController.impuestos);
+  router.get('/salarios', verification.revisarCookie,verification.revisarCookiePermisos, salariosController.salarios);
   router.get('/detallesDeducciones/:idEmpleado',verification.revisarCookie,salariosController.salariosDetalle);
   router.get('/empleados/:idEmpleado', verification.revisarCookie, usuariosController.getEmpleadoById);
   router.get('/logout', loginController.logout);
-  router.get('/calculoDeNomina', verification.revisarCookie, nominaController.calculoDeNomina);
+  router.get('/calculoDeNomina', verification.revisarCookie,  nominaController.calculoDeNomina);
 
 
   router.post('/guardarCambios', verification.revisarCookie, usuariosController.guardarCambios);

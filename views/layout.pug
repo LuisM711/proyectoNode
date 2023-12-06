@@ -2,8 +2,8 @@ doctype html
 html(lang="es")
   head
     meta(charset="UTF-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    link(rel="stylesheet", href="/css/bootstrap.css")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet" href="/css/bootstrap.css")
     script(src="/js/bootstrap.js")
     title Equipo 7
   body
@@ -21,7 +21,7 @@ html(lang="es")
     nav.navbar.navbar-expand-lg.navbar-dark.bg-primary
       .container-fluid
         a.navbar-brand(href="/") Equipo 7
-        button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav", aria-controls="navbarNav", aria-expanded="false", aria-label="Toggle navigation")
+        button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation")
           span.navbar-toggler-icon
         .collapse.navbar-collapse#navbarNav
           ul.navbar-nav
@@ -55,17 +55,16 @@ html(lang="es")
       function generarNomina()
       {
         fetch("/calculoDeNomina", {
-            method: "GET",
-            })
-            .then(response => response.json())
-            .then(data => {
-              alert(data.message);
-            })
-            .catch(error => {
-              errorMsg(error);
-            }).finally(() => {
-              location.reload();
-            });
+          method: "GET",
+          })
+          .then(response => response.json())
+          .then(data => {
+            alert(data.message);
+          })
+          .catch(error => {
+          }).finally(() => {
+            location.reload();
+          });
       }
 
   block content

@@ -17,6 +17,25 @@ function revisarCookie(req, res, next) {
         //return false;
     }
 }
+function revisarCookiePermisos(req, res, next) {
+    try {
+        const cookieJWT = req.headers.cookie.split("; ").find((cookie) => cookie.startsWith("jwt=")).slice(4);
+        const decodificada = jwt.verify(cookieJWT, process.env.JWT_SECRET);
+        if (decodificada.rango == 1) {
+            return next();
+        } else {
+            res.render('principal', {
+                datos: {
+                    error: 'No tienes permisos',
+                    ...decodificada
+                }
+            });
+        }
+    } catch (error) {
+        return res.render('login', { error: error });
+    }
+}
+
 //verification.js
 function getUserData(req, res) {
     try {
@@ -29,7 +48,9 @@ function getUserData(req, res) {
     }
 }
 
+
 module.exports = {
     revisarCookie,
+    revisarCookiePermisos,
     getUserData
 };

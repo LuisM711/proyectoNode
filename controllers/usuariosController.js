@@ -1,32 +1,23 @@
 const EmpleadoModel = require('../models/EmpleadoModel');
 const verification = require("../middlewares/verification");
 module.exports.usuarios = (req, res) => {
-    const userData = verification.getUserData(req, res);
-    if (userData.rango === 1) {
-        EmpleadoModel.getEmpleadosLight(req.db, (err, empleadosData, cargosData) => {
-            if (err) {
-                res.status(500).send('Error en la consulta de empleados');
-                return;
-            }
-            //console.log(empleadosData);
-            //console.log(cargosData);
-            res.render('usuarios', {
-                userData: req.app.locals.userData,
-                empleadosData,
-                cargosData
-            });
+
+    EmpleadoModel.getEmpleadosLight(req.db, (err, empleadosData, cargosData) => {
+        if (err) {
+            res.status(500).send('Error en la consulta de empleados');
+            return;
+        }
+        //console.log(empleadosData);
+        //console.log(cargosData);
+        res.render('usuarios', {
+            userData: req.app.locals.userData,
+            empleadosData,
+            cargosData
         });
-    }
-    else {
-        //res.render('principal', { error: 'No tienes permisos'});
-        res.render('principal', {
-            datos: {
-                error: 'No tienes permisos',
-                ...userData
-            }
-        });
-    }
-};
+    });
+}
+
+
 
 module.exports.agregarUsuario = (req, res) => {
     const userData = verification.getUserData(req, res);

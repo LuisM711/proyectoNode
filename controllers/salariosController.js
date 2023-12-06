@@ -2,29 +2,20 @@ const EmpleadoModel = require('../models/EmpleadoModel');
 const verification = require("../middlewares/verification");
 
 module.exports.salarios = (req, res) => {
-    const userData = verification.getUserData(req, res);
-    if (userData.rango === 1) {
 
-        EmpleadoModel.getSalarios(req.db, (err, empleadosData) => {
-            if (err) {
-                res.status(500).send('Error en la consulta de empleados');
-                return;
-            }
-            res.render('salarios', {
-                userData: req.app.locals.userData,
-                empleadosData
-            });
+    EmpleadoModel.getSalarios(req.db, (err, empleadosData) => {
+        if (err) {
+            res.status(500).send('Error en la consulta de empleados');
+            return;
+        }
+        res.render('salarios', {
+            userData: req.app.locals.userData,
+            empleadosData
         });
-    }
-    else {
-        res.render('principal', {
-            datos: {
-                error: 'No tienes permisos',
-                ...userData
-            }
-        });
-    }
+    });
 }
+
+
 module.exports.salariosDetalle = (req, res) => {
     const idEmpleado = req.params.idEmpleado;
 
