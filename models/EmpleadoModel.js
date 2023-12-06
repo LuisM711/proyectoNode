@@ -260,14 +260,22 @@ class EmpleadoModel {
                             });
 
                             let sueldoNeto = sueldoBruto - totalRetenciones - porPagar;
-
+                            const impuestosDesglose = impuestos.map(impuesto => {
+                                const monto = impuesto.porcentaje * sueldoBruto / 100;
+                                return {
+                                    nombre: impuesto.nombre,
+                                    porcentaje: impuesto.porcentaje,
+                                    monto: monto
+                                };
+                            });
                             const objeto = {
                                 idEmp: empId,
+                                nombreCompleto: element.Nombre + " " + element.ApellidoPaterno +" "+ element.ApellidoMaterno,
                                 sueldoBruto: sueldoBruto,
-                                impuestos: impuestos,
+                                impuestos: impuestosDesglose,
                                 totalRetenciones: totalRetenciones,
-                                abonado: porPagar,
-                                descuentos: descuentosActualizados,
+                                abonadoADeuda: porPagar,
+                                descuentosRestantes: descuentosActualizados,
                                 deudaTotal: deudaTotal,
                                 sueldoNeto: sueldoNeto,
                             };
